@@ -5,8 +5,10 @@ using UnityEngine;
 public class TableManager : MonoBehaviour
 {
     [SerializeField] Vector2 _tableSize = new Vector2(8, 8);
+    public Vector2 TableSize { get { return _tableSize; } }
+
     [SerializeField] GameObject tableScale;
-    [SerializeField] GameObject tableObject;
+    public GameObject tableObject;
     [SerializeField] GameObject spawnerPrefab;
     public GameObject piecePrefab;
     [SerializeField] GameObject debrisPrefab;
@@ -115,9 +117,20 @@ public class TableManager : MonoBehaviour
         float startX = (-_tableSize.x / 2) + 0.5f;
         float startY = (_tableSize.y / 2) - 0.5f;
 
-        Debug.Log("X: " + (startX + indexX) + " Y: " + (startY - IndexY));
-
         return new Vector2(startX + indexX, startY - IndexY);
+    }
+
+    public TableSlot FindLowestAvailableSlot(int columnIndex)
+    {
+        for (int i = (int)_tableSize.y - 1; i >= 0; i--)
+        {
+            if (!TableSlotArray[i][columnIndex].havePiece)
+            {
+                return TableSlotArray[i][columnIndex];
+            }
+        }
+
+        return null;
     }
 
     void PlacingEachSpawner()
@@ -127,16 +140,17 @@ public class TableManager : MonoBehaviour
 
         for(int i = 0; i < _tableSize.x; i++)
         {
-            SpawnerList.Add(CreateSpawner(new Vector2(startX, _tableSize.y * 2)));
+            SpawnerList.Add(CreateSpawner(i, new Vector2(startX, _tableSize.y * 2)));
 
             startX++;
         }
     }
 
-    PieceSpawner CreateSpawner(Vector2 position)
+    PieceSpawner CreateSpawner(int columnIndex, Vector2 position)
     {
         GameObject spawner = Instantiate(spawnerPrefab, position, Quaternion.identity, tableObject.transform);
         spawner.transform.localPosition = position;
+        spawner.GetComponent<PieceSpawner>().columnIndex = columnIndex;
 
         return spawner.GetComponent<PieceSpawner>();
     }
@@ -147,12 +161,17 @@ public class TableSlot
 {
     public Vector2 slotIndex = Vector2.zero;
     public Vector2 SlotPosition = Vector2.zero;
-    public bool havePiece = false;
+    public bool havePiece { get; private set; }
 
     public TableSlot(Vector2 index, Vector2 position, bool havePiece = false)
     {
         slotIndex = index;
         SlotPosition = position;
         this.havePiece = havePiece;
+    }
+
+    public void setOccupyStatus(bool status)
+    {
+        havePiece = status;
     }
 }
