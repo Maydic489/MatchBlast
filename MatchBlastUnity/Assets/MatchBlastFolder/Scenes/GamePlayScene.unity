@@ -302,6 +302,7 @@ MonoBehaviour:
   tableScale: {fileID: 106449538}
   tableObject: {fileID: 1744993913}
   spawnerPrefab: {fileID: 8195279948496149397, guid: 3886204b87073874581936ff52f1a603, type: 3}
+  piecePrefab: {fileID: 0}
   debrisPrefab: {fileID: 0}
 --- !u!114 &545997002
 MonoBehaviour:

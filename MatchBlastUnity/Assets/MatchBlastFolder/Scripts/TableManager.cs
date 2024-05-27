@@ -8,7 +8,11 @@ public class TableManager : MonoBehaviour
     [SerializeField] GameObject tableScale;
     [SerializeField] GameObject tableObject;
     [SerializeField] GameObject spawnerPrefab;
+    public GameObject piecePrefab;
     [SerializeField] GameObject debrisPrefab;
+    
+    public TableSlot[][] TableSlotArray;
+    List<PieceSpawner> SpawnerList = new List<PieceSpawner>();
 
     public static TableManager instance = null;
     void Awake()
@@ -25,7 +29,7 @@ public class TableManager : MonoBehaviour
 
     private void Start()
     {
-        SetTableSize(12,10);
+        SetTableSize(9,10);
         PlacingEachSpawner();
     }
 
@@ -34,6 +38,18 @@ public class TableManager : MonoBehaviour
         _tableSize = new Vector2(sizeX, sizeY);
         tableObject.GetComponent<SpriteRenderer>().size = _tableSize;
         AdjustTableSize();
+
+        //create table slot array
+        TableSlotArray = new TableSlot[sizeY][];
+        for (int i = 0; i < sizeY; i++)
+        {
+            TableSlotArray[i] = new TableSlot[sizeX];
+
+            for (int j = 0; j < sizeX; j++)
+            {
+                TableSlotArray[i][j] = new TableSlot(new Vector2(j, i), FindSlotPosition(j, i));
+            }
+        }
     }
 
     public void AdjustTableSize()
@@ -94,21 +110,49 @@ public class TableManager : MonoBehaviour
         return a;
     }
 
+    Vector2 FindSlotPosition(int indexX, int IndexY)
+    {
+        float startX = (-_tableSize.x / 2) + 0.5f;
+        float startY = (_tableSize.y / 2) - 0.5f;
+
+        Debug.Log("X: " + (startX + indexX) + " Y: " + (startY - IndexY));
+
+        return new Vector2(startX + indexX, startY - IndexY);
+    }
+
     void PlacingEachSpawner()
     {
+        //find the leftest collumn position
         float startX = (-_tableSize.x / 2) + 0.5f;
 
         for(int i = 0; i < _tableSize.x; i++)
         {
-            CreateSpawner(new Vector2(startX, _tableSize.y * 2));
+            SpawnerList.Add(CreateSpawner(new Vector2(startX, _tableSize.y * 2)));
 
             startX++;
         }
     }
 
-    void CreateSpawner(Vector2 position)
+    PieceSpawner CreateSpawner(Vector2 position)
     {
         GameObject spawner = Instantiate(spawnerPrefab, position, Quaternion.identity, tableObject.transform);
         spawner.transform.localPosition = position;
+
+        return spawner.GetComponent<PieceSpawner>();
+    }
+}
+
+[System.Serializable]
+public class TableSlot
+{
+    public Vector2 slotIndex = Vector2.zero;
+    public Vector2 SlotPosition = Vector2.zero;
+    public bool havePiece = false;
+
+    public TableSlot(Vector2 index, Vector2 position, bool havePiece = false)
+    {
+        slotIndex = index;
+        SlotPosition = position;
+        this.havePiece = havePiece;
     }
 }
