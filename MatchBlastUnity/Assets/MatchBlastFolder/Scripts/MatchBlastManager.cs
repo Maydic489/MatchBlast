@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class MatchBlastManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static MatchBlastManager instance = null;
+    void Awake()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
 }
