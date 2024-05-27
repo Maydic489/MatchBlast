@@ -7,6 +7,7 @@ public class TableManager : MonoBehaviour
     [SerializeField] Vector2 _tableSize = new Vector2(8, 8);
     [SerializeField] GameObject tableScale;
     [SerializeField] GameObject tableObject;
+    [SerializeField] GameObject spawnerPrefab;
     [SerializeField] GameObject debrisPrefab;
 
     public static TableManager instance = null;
@@ -25,6 +26,7 @@ public class TableManager : MonoBehaviour
     private void Start()
     {
         SetTableSize(12,10);
+        PlacingEachSpawner();
     }
 
     public void SetTableSize(int sizeX, int sizeY)
@@ -90,5 +92,23 @@ public class TableManager : MonoBehaviour
             a = temp;
         }
         return a;
+    }
+
+    void PlacingEachSpawner()
+    {
+        float startX = (-_tableSize.x / 2) + 0.5f;
+
+        for(int i = 0; i < _tableSize.x; i++)
+        {
+            CreateSpawner(new Vector2(startX, _tableSize.y * 2));
+
+            startX++;
+        }
+    }
+
+    void CreateSpawner(Vector2 position)
+    {
+        GameObject spawner = Instantiate(spawnerPrefab, position, Quaternion.identity, tableObject.transform);
+        spawner.transform.localPosition = position;
     }
 }
