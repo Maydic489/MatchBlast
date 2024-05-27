@@ -14,9 +14,10 @@ public class PieceObject : MonoBehaviour
 
     private void Start()
     {
-        //TODO: randomize piece type
         if(pieceData == null)
-            pieceData = new PieceData(PieceType.Red, new Vector2(0, 0));
+            pieceData = new PieceData(GetRandomPieceColor(), new Vector2(0, 0));
+        else
+            SetRendererColor(GetRandomPieceColor());
     }
 
     public void MovePieceDown(float newPosY)
@@ -32,6 +33,36 @@ public class PieceObject : MonoBehaviour
         }
         else
             pieceData.slotIndex = slotIndex;
+    }
+
+    void SetRendererColor(PieceType color)
+    {
+        switch (color)
+        {
+            case PieceType.Red:
+                renderer.color = Color.red;
+                break;
+            case PieceType.Green:
+                renderer.color = Color.green;
+                break;
+            case PieceType.Blue:
+                renderer.color = Color.blue;
+                break;
+            case PieceType.Yellow:
+                renderer.color = Color.yellow;
+                break;
+            case PieceType.Bomb:
+                renderer.color = Color.black;
+                break;
+            case PieceType.Disco:
+                renderer.color = Color.magenta;
+                break;
+        }
+    }
+
+    PieceType GetRandomPieceColor()
+    {
+        return (PieceType)UnityEngine.Random.Range(0, 4);
     }
 }
 
