@@ -11,7 +11,7 @@ public class PieceSpawner : MonoBehaviour
     {
         CreatePiecePool();
 
-        StartCoroutine(MoveEachNewPieceDown(true));
+        //StartCoroutine(MoveEachNewPieceDown(true));
     }
 
     void CreatePiecePool()
@@ -24,9 +24,17 @@ public class PieceSpawner : MonoBehaviour
         }
     }
 
+    public void MoveNewPieceDown(bool isFirstTime = false)
+    {
+        StartCoroutine(MoveEachNewPieceDown(isFirstTime));
+    }
+
     //move available pieces in pool to the lowest available slot
     IEnumerator MoveEachNewPieceDown(bool isFirstTime = false)
     {
+        //wait for piece pools to be created
+        yield return new WaitForEndOfFrame ();
+
         TableSlot freeSlot;
 
         foreach (PieceObject piece in piecePool)
@@ -44,6 +52,7 @@ public class PieceSpawner : MonoBehaviour
                 piece.MovePieceDown(freeSlot.SlotPosition.y);
 
                 freeSlot.setOccupyStatus(true);
+                freeSlot.pieceObject = piece;
 
                 yield return new WaitForSeconds(0.1f);
             }

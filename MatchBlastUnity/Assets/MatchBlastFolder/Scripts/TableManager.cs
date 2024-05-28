@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TableManager : MonoBehaviour
 {
@@ -12,9 +13,13 @@ public class TableManager : MonoBehaviour
     [SerializeField] GameObject spawnerPrefab;
     public GameObject piecePrefab;
     [SerializeField] GameObject debrisPrefab;
+
+    public bool isTableReady = false; //ready means all pieces are in place
     
     public TableSlot[][] TableSlotArray;
     List<PieceSpawner> SpawnerList = new List<PieceSpawner>();
+
+    public UnityEvent tableReadyEvent;
 
     public static TableManager instance = null;
     void Awake()
@@ -26,6 +31,12 @@ public class TableManager : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+            return;
+        }
+
+        if (tableReadyEvent == null)
+        {
+            tableReadyEvent = new UnityEvent();
         }
     }
 
@@ -33,6 +44,8 @@ public class TableManager : MonoBehaviour
     {
         SetTableSize(9,10);
         PlacingEachSpawner();
+
+        RefillTable(true);
     }
 
     public void SetTableSize(int sizeX, int sizeY)
@@ -154,6 +167,22 @@ public class TableManager : MonoBehaviour
 
         return spawner.GetComponent<PieceSpawner>();
     }
+
+    void RefillTable(bool isFirstTime = false)
+    {
+        Debug.Log("Refill Table");
+        foreach (PieceSpawner spawner in SpawnerList)
+        {
+            spawner.MoveNewPieceDown(isFirstTime);
+        }
+
+        Invoke(nameof(InvokeTableReadyEvent), 2);
+    }
+
+    void InvokeTableReadyEvent()
+    {
+        tableReadyEvent.Invoke();
+    }
 }
 
 [System.Serializable]
@@ -161,6 +190,7 @@ public class TableSlot
 {
     public Vector2 slotIndex = Vector2.zero;
     public Vector2 SlotPosition = Vector2.zero;
+    public PieceObject pieceObject { get; set; }
     public bool havePiece { get; private set; }
 
     public TableSlot(Vector2 index, Vector2 position, bool havePiece = false)

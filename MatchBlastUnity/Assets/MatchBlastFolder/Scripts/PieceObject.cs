@@ -7,7 +7,7 @@ using System;
 
 public class PieceObject : MonoBehaviour
 {
-    [SerializeField] PieceData pieceData;
+    public PieceData pieceData;
     public SpriteRenderer renderer;
     [SerializeField] Ease easeType = Ease.OutBounce;
     int moveDirection = -1;
@@ -41,21 +41,27 @@ public class PieceObject : MonoBehaviour
         {
             case PieceType.Red:
                 renderer.color = Color.red;
+                pieceData.pieceType = PieceType.Red;
                 break;
             case PieceType.Green:
                 renderer.color = Color.green;
+                pieceData.pieceType = PieceType.Green;
                 break;
             case PieceType.Blue:
                 renderer.color = Color.blue;
+                pieceData.pieceType = PieceType.Blue;
                 break;
             case PieceType.Yellow:
                 renderer.color = Color.yellow;
+                pieceData.pieceType = PieceType.Yellow;
                 break;
             case PieceType.Bomb:
                 renderer.color = Color.black;
+                pieceData.pieceType = PieceType.Bomb;
                 break;
             case PieceType.Disco:
                 renderer.color = Color.magenta;
+                pieceData.pieceType = PieceType.Disco;
                 break;
         }
     }
@@ -63,6 +69,19 @@ public class PieceObject : MonoBehaviour
     PieceType GetRandomPieceColor()
     {
         return (PieceType)UnityEngine.Random.Range(0, 4);
+    }
+
+    public void OnMouseDown()
+    {
+        Debug.Log("Piece clicked");
+
+        MatchingManager.instance.SelectMatchGroup(this);
+    }
+
+    //not really destroy, just return to pool
+    public void DestroyPiece()
+    {
+        this.gameObject.SetActive(false);
     }
 }
 
