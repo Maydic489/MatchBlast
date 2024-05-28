@@ -41,16 +41,15 @@ public class TableManager : MonoBehaviour
             tableReadyEvent = new UnityEvent();
         }
 
-        //178 = long long matches group
-        //456 = opposite edge matches group combine to be 1 group
+        
         //int newSeed = Random.Range(0, 1000);
-        randomSeed = 178;
+        randomSeed = 378;
         //Debug.Log("New Seed: " + newSeed);
     }
 
     private void Start()
     {
-        SetTableSize(9,10);
+        SetTableSize(10,10);
         PlacingEachSpawner();
 
         RefillTable(true);
