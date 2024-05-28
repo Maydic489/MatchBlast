@@ -16,8 +16,10 @@ public class TableManager : MonoBehaviour
 
     public bool isTableReady = false; //ready means all pieces are in place
     
-    public TableSlot[][] TableSlotArray;
+    public TableSlot[][] TableSlotArray; //[y][x]
     List<PieceSpawner> SpawnerList = new List<PieceSpawner>();
+
+    public int randomSeed = 60;
 
     public UnityEvent tableReadyEvent;
 
@@ -38,6 +40,12 @@ public class TableManager : MonoBehaviour
         {
             tableReadyEvent = new UnityEvent();
         }
+
+        //178 = long long matches group
+        //456 = opposite edge matches group combine to be 1 group
+        //int newSeed = Random.Range(0, 1000);
+        randomSeed = 178;
+        //Debug.Log("New Seed: " + newSeed);
     }
 
     private void Start()
@@ -176,7 +184,7 @@ public class TableManager : MonoBehaviour
             spawner.MoveNewPieceDown(isFirstTime);
         }
 
-        Invoke(nameof(InvokeTableReadyEvent), 2);
+        Invoke(nameof(InvokeTableReadyEvent), 3);
     }
 
     void InvokeTableReadyEvent()

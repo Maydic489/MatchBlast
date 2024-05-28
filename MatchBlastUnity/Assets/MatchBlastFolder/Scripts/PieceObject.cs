@@ -14,7 +14,11 @@ public class PieceObject : MonoBehaviour
 
     private void Start()
     {
-        if(pieceData == null)
+        //7, 
+        TableManager.instance.randomSeed += 7;
+        UnityEngine.Random.InitState(TableManager.instance.randomSeed);
+
+        if (pieceData == null)
             pieceData = new PieceData(GetRandomPieceColor(), new Vector2(0, 0));
         else
             SetRendererColor(GetRandomPieceColor());
