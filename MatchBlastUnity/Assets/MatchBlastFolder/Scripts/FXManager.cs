@@ -15,7 +15,10 @@ public class FXManager : MonoBehaviour
 
     public void PlayPopEffect(List<Vector3> popPositions, PieceType pieceType)
     {
-        main.startColor = GetColor(pieceType) + (Color.black * 0.5f);
+        Debug.Log("FX color: " + pieceType.ToString());
+        Debug.Log("Get color: " + GetColor(pieceType).ToString());
+
+        main.startColor = GetColor(pieceType);
 
         StartCoroutine(MoveFXThroughPieces(popPositions));
     }

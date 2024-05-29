@@ -52,7 +52,7 @@ public class PieceSpawner : MonoBehaviour
                 freeSlot = TableManager.instance.FindLowestAvailableSlot(columnIndex);
 
                 piece.SetPieceData(freeSlot.slotIndex);
-                piece.MovePieceDown(freeSlot.SlotPosition.y);
+                piece.MovePieceDown(freeSlot.SlotPosition.y, 0.7f);
 
                 freeSlot.setOccupyStatus(true);
                 freeSlot.pieceObject = piece;
@@ -112,6 +112,8 @@ public class PieceSpawner : MonoBehaviour
             if (pieceToFall == null)
                 yield break;
 
+            float fallTime = pieceToFall.pieceData.slotIndex.y < 0 ? 0.7f : 0.5f;
+
             bool isSpecialPiece = false;
             if((specialPiece == PieceType.Bomb || specialPiece == PieceType.Disco)
                 && freeSlot.slotIndex.y <= specialPieceIndexY && pieceToFall.pieceData.slotIndex.y < 0)
@@ -138,7 +140,7 @@ public class PieceSpawner : MonoBehaviour
             else
                 pieceToFall.SetPieceData(freeSlot.slotIndex);
 
-            pieceToFall.MovePieceDown(freeSlot.SlotPosition.y);
+            pieceToFall.MovePieceDown(freeSlot.SlotPosition.y, fallTime);
 
             freeSlot.setOccupyStatus(true);
             freeSlot.pieceObject = pieceToFall;

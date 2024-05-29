@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -245,8 +246,8 @@ public class TableManager : MonoBehaviour
     {
         if (selectedPiece.pieceData.pieceType == PieceType.Bomb)
         {
-            Debug.Log("Use special piece: Bomb");
-            //TODO: use bomb
+            UseBome(selectedPiece.pieceData.slotIndex);
+            return;
         }
         else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
         {
@@ -281,8 +282,13 @@ public class TableManager : MonoBehaviour
             //TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
         }
 
+        DestroyAfterEffect(matchedPieces, matchedPieces[0].pieceData.pieceType);
+    }
+
+    void DestroyAfterEffect(List<PieceObject> matchedPieces, PieceType _pieceType)
+    {
         List<Vector3> piecesPos = matchedPieces.FindAll(x => x != null).ConvertAll(x => x.transform.localPosition);
-        fxManager.PlayPopEffect(piecesPos, matchedPieces[0].pieceData.pieceType);
+        fxManager.PlayPopEffect(piecesPos, _pieceType);
 
         //Invoke(nameof(MoveActivePiecesDown), 0.5f);
         MoveActivePiecesDown();
@@ -290,7 +296,22 @@ public class TableManager : MonoBehaviour
 
     void UseBome(Vector2 pieceIndex)
     {
+        List<PieceObject> bombPiece = new List<PieceObject>();
 
+        for(int i = 0; i < _tableSize.x; i++)
+        {
+            for(int j = 0; j < _tableSize.y; j++)
+            {
+                if (i == pieceIndex.x || j == pieceIndex.y)
+                {
+                    TableSlotArray[j][i].pieceObject.DestroyPiece();
+                    bombPiece.Add(TableSlotArray[j][i].pieceObject);
+                }
+            }
+        }
+
+        //Debug.Break();
+        DestroyAfterEffect(bombPiece,PieceType.Bomb);
     }
 
     void UseDisco(Vector2 pieceIndex)

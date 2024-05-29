@@ -33,12 +33,12 @@ public class PieceObject : MonoBehaviour
         }
     }
 
-    public void MovePieceDown(float newPosY)
+    public void MovePieceDown(float newPosY, float time)
     {
-        transform.DOLocalMoveY(newPosY, 0.5f).SetEase(easeType);
+        transform.DOLocalMoveY(newPosY, time).SetEase(easeType);
         transform.localScale = new Vector3(0.5f, 1.5f, 1);
-        transform.DOScaleY(1, 0.5f).SetEase(easeType);
-        transform.DOScaleX(1, 0.5f).SetEase(easeType);
+        transform.DOScaleY(1, time).SetEase(easeType);
+        transform.DOScaleX(1, time).SetEase(easeType);
     }
 
     public void MovePieceHere(Vector2 newPos)
