@@ -156,12 +156,12 @@ public class TableManager : MonoBehaviour
         //check if every column refilled
         if(filledColumn < _tableSize.y -1)
         {
-            Debug.Log("Column " + columnIndex + " is full");
+            //Debug.Log("Column " + columnIndex + " is full");
             filledColumn++;
         }
         else
         {
-            Debug.Log("Table is ready");
+            //Debug.Log("Table is ready");
             filledColumn = 0;
             //Invoke(nameof(InvokeTableReadyEvent), 1);
             InvokeTableReadyEvent();
@@ -179,7 +179,7 @@ public class TableManager : MonoBehaviour
         }
 
         TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].setOccupyStatus(false);
-        Debug.Log("Piece leave slot " + slotIndex + " occupy " + TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].havePiece);
+        //Debug.Log("Piece leave slot " + slotIndex + " occupy " + TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].havePiece);
     }
 
     void PlacingEachSpawner()
@@ -216,7 +216,7 @@ public class TableManager : MonoBehaviour
     //make inactive piece in pool active and move it to the lowest available slot
     void FillTable(bool isFirstTime = false)
     {
-        Debug.Log("Refill Table");
+        //Debug.Log("Refill Table");
         foreach (PieceSpawner spawner in SpawnerList)
         {
             spawner.MoveNewPieceDown(isFirstTime);
@@ -251,6 +251,13 @@ public class TableManager : MonoBehaviour
 
     void DestroyMatchGroup(List<PieceObject> matchedPieces)
     {
+        Debug.Log("destroy " + matchedPieces.Count + " pieces");
+
+        foreach(PieceObject piece in matchedPieces)
+        {
+            Debug.Log("piece slotIndex "+ piece.pieceData.slotIndex);
+        }
+
         isReadyToTouch = false;
 
         foreach (PieceObject piece in matchedPieces)
@@ -259,7 +266,6 @@ public class TableManager : MonoBehaviour
             //TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
         }
 
-        Debug.Log("destroy group");
         //Invoke(nameof(MoveActivePiecesDown), 0.5f);
         MoveActivePiecesDown();
     }

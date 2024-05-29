@@ -51,7 +51,7 @@ public class MatchingManager : MonoBehaviour
         {
             if(thisGroup.Contains(selectedPiece))
             {
-                Debug.Log("destroying group " + i + " with "+thisGroup.Count);
+                //Debug.Log("destroying group " + i + " with "+thisGroup.Count);
 
                 return thisGroup;
             }
@@ -84,7 +84,9 @@ public class MatchingManager : MonoBehaviour
                     {
                         if (_tableManager.TableSlotArray[i][j].pieceObject.pieceData.pieceType == _tableManager.TableSlotArray[i][j + 1].pieceObject.pieceData.pieceType)
                         {
-                            matchedPieces.Add(_tableManager.TableSlotArray[i][j].pieceObject);
+                            if(matchedPieces.Count == 0)
+                                matchedPieces.Add(_tableManager.TableSlotArray[i][j].pieceObject);
+
                             matchedPieces.Add(_tableManager.TableSlotArray[i][j + 1].pieceObject);
                         }
                         else if (matchedPieces.Count >= 2)
@@ -142,7 +144,7 @@ public class MatchingManager : MonoBehaviour
 
         if (groupPieces.Count > 0)
         {
-            Debug.Log("group pieces count "+groupPieces.Count);
+            //Debug.Log("group pieces count "+groupPieces.Count);
 
             //loop Combine() until no more group can be combined
             int oldGroupCount = 0;
@@ -183,7 +185,7 @@ public class MatchingManager : MonoBehaviour
                     //check if group adjacent to eachother (by checking its piece by piece)
                     if (AreGroupsAdjacent(groupPieces[i], groupPieces[j],i,j))
                     {
-                        groupPieces[i].AddRange(groupPieces[j]);
+                        CombineGroupWithoutDuplicatePiece(groupPieces[i], groupPieces[j]);
 
                         groupPieces.RemoveAt(j);
 
@@ -194,7 +196,7 @@ public class MatchingManager : MonoBehaviour
             }
         }
 
-        Debug.Log("have final " + groupPieces.Count + " group pieces");
+        //Debug.Log("have final " + groupPieces.Count + " group pieces");
     }
 
     bool AreGroupsAdjacent(List<PieceObject> group1, List<PieceObject> group2, int g1, int g2)
@@ -233,4 +235,24 @@ public class MatchingManager : MonoBehaviour
         return false;
     }
 
+    void CombineGroupWithoutDuplicatePiece(List<PieceObject> group1, List<PieceObject> group2)
+    {
+        foreach (PieceObject piece2 in group2)
+        {
+            bool isDuplicate = false;
+            foreach (PieceObject piece1 in group1)
+            {
+                if (piece1.pieceData.slotIndex == piece2.pieceData.slotIndex)
+                {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            if (!isDuplicate)
+            {
+                group1.Add(piece2);
+            }
+        }
+    }
 }
