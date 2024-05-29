@@ -27,23 +27,19 @@ public class MatchingManager : MonoBehaviour
         _tableManager.tableReadyEvent.AddListener(CheckMatches);
     }
 
-    public void SelectMatchGroup(PieceObject selectedPiece)
+    public List<PieceObject> SelectMatchGroup(PieceObject selectedPiece)
     {
         var selectedGroup = FindThisPieceGroup(selectedPiece);
 
         if(selectedGroup != null)
         {
-            foreach (PieceObject piece in selectedGroup)
-            {
-                piece.DestroyPiece();
-            }
-            
             groupPieces.Remove(selectedGroup);
-            //CombineAdjacentMatchGroup();
+            return selectedGroup;
         }
         else
         {
             Debug.Log("no match group found");
+            return null;
         }
     }
 

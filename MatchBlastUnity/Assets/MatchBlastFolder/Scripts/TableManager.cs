@@ -41,9 +41,9 @@ public class TableManager : MonoBehaviour
             tableReadyEvent = new UnityEvent();
         }
 
-        
+        //for testing, to get same random table everytimes
         //int newSeed = Random.Range(0, 1000);
-        randomSeed = 378;
+        //randomSeed = 378;
         //Debug.Log("New Seed: " + newSeed);
     }
 
@@ -146,11 +146,19 @@ public class TableManager : MonoBehaviour
         {
             if (!TableSlotArray[i][columnIndex].havePiece)
             {
+                Debug.Log("Found lowest available slot: " + TableSlotArray[i][columnIndex].slotIndex);
                 return TableSlotArray[i][columnIndex];
             }
         }
 
+        Debug.Log("No available slot found "+columnIndex);
         return null;
+    }
+
+    public void PieceLeaveCurrentSlot(Vector2 slotIndex)
+    {
+        TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].setOccupyStatus(false);
+        Debug.Log("Piece leave slot " + slotIndex + " occupy " + TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].havePiece);
     }
 
     void PlacingEachSpawner()
@@ -175,6 +183,16 @@ public class TableManager : MonoBehaviour
         return spawner.GetComponent<PieceSpawner>();
     }
 
+    //move all active pieces down
+    void MoveActivePiecesDown()
+    {
+        foreach (PieceSpawner spawner in SpawnerList)
+        {
+            spawner.MoveActivePiecesDown();
+        }
+    }
+
+    //make inactive piece in pool active and move it to the lowest available slot
     void RefillTable(bool isFirstTime = false)
     {
         Debug.Log("Refill Table");
@@ -183,12 +201,35 @@ public class TableManager : MonoBehaviour
             spawner.MoveNewPieceDown(isFirstTime);
         }
 
-        Invoke(nameof(InvokeTableReadyEvent), 3);
+        Invoke(nameof(InvokeTableReadyEvent), 2);
     }
 
     void InvokeTableReadyEvent()
     {
         tableReadyEvent.Invoke();
+    }
+
+    //call from pieceObject
+    public void CheckIfPieceMatch(PieceObject selectedPiece)
+    {
+        var matchGroup = MatchingManager.instance.SelectMatchGroup(selectedPiece);
+
+        if(matchGroup != null)
+        {
+            DestroyMatchGroup(matchGroup);
+        }
+    }
+
+    void DestroyMatchGroup(List<PieceObject> matchedPieces)
+    {
+        foreach (PieceObject piece in matchedPieces)
+        {
+            piece.DestroyPiece();
+            TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
+        }
+
+        Debug.Log("destroy group");
+        Invoke(nameof(MoveActivePiecesDown), 0.5f);
     }
 }
 

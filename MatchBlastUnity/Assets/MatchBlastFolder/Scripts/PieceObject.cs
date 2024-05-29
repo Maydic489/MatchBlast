@@ -15,8 +15,8 @@ public class PieceObject : MonoBehaviour
     private void Start()
     {
         //7, 
-        TableManager.instance.randomSeed += 7;
-        UnityEngine.Random.InitState(TableManager.instance.randomSeed);
+        //TableManager.instance.randomSeed += 7;
+        //UnityEngine.Random.InitState(TableManager.instance.randomSeed);
 
         if (pieceData == null)
             pieceData = new PieceData(GetRandomPieceColor(), new Vector2(0, 0));
@@ -37,6 +37,11 @@ public class PieceObject : MonoBehaviour
         }
         else
             pieceData.slotIndex = slotIndex;
+    }
+
+    public void LeaveCurrentSlot()
+    {
+        TableManager.instance.PieceLeaveCurrentSlot(pieceData.slotIndex);
     }
 
     void SetRendererColor(PieceType color)
@@ -79,7 +84,7 @@ public class PieceObject : MonoBehaviour
     {
         Debug.Log("Piece clicked");
 
-        MatchingManager.instance.SelectMatchGroup(this);
+        TableManager.instance.CheckIfPieceMatch(this);
     }
 
     //not really destroy, just return to pool
