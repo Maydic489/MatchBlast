@@ -61,6 +61,11 @@ public class MatchingManager : MonoBehaviour
         return null;
     }
 
+    void ResetPieceHighlight()
+    {
+
+    }
+
     void CheckMatches()
     {
         groupPieces.Clear();
@@ -78,6 +83,8 @@ public class MatchingManager : MonoBehaviour
 
             for (int j = 0; j < _tableManager.TableSize.x; j++)
             {
+                _tableManager.TableSlotArray[i][j].pieceObject.DisableHighlight();
+
                 if (j < _tableManager.TableSize.x - 1)
                 {
                     if (_tableManager.TableSlotArray[i][j].havePiece && _tableManager.TableSlotArray[i][j + 1].havePiece)
@@ -191,6 +198,8 @@ public class MatchingManager : MonoBehaviour
 
                         //compensate for removed a group, have to check same index again that now have new group
                         j--;
+
+                        StartCoroutine(CheckForSpecialPiece(groupPieces[i]));
                     }
                 }
             }
@@ -252,6 +261,33 @@ public class MatchingManager : MonoBehaviour
             if (!isDuplicate)
             {
                 group1.Add(piece2);
+            }
+        }
+    }
+
+    IEnumerator CheckForSpecialPiece(List<PieceObject> pieceObjects)
+    {
+        yield return new WaitUntil(() => TableManager.instance.isReadyToTouch);
+
+        if(pieceObjects.Count >= 10)
+        {
+            foreach (PieceObject piece in pieceObjects)
+            {
+                piece.HighlightPotentailBonusPiece(PieceType.Disco);
+            }
+        }
+        else if(pieceObjects.Count >= 6)
+        {
+            foreach (PieceObject piece in pieceObjects)
+            {
+                piece.HighlightPotentailBonusPiece(PieceType.Bomb);
+            }
+        }
+        else
+        {
+            foreach (PieceObject piece in pieceObjects)
+            {
+                piece.SetPieceColor(false, piece.pieceData.pieceType);
             }
         }
     }

@@ -253,10 +253,10 @@ public class TableManager : MonoBehaviour
     {
         Debug.Log("destroy " + matchedPieces.Count + " pieces");
 
-        foreach(PieceObject piece in matchedPieces)
-        {
-            Debug.Log("piece slotIndex "+ piece.pieceData.slotIndex);
-        }
+        //foreach(PieceObject piece in matchedPieces)
+        //{
+        //    Debug.Log("piece slotIndex "+ piece.pieceData.slotIndex);
+        //}
 
         isReadyToTouch = false;
 

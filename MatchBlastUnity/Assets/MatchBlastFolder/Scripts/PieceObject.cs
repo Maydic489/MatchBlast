@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEditor.Experimental.GraphView;
 using System;
 
 public class PieceObject : MonoBehaviour
@@ -87,6 +86,38 @@ public class PieceObject : MonoBehaviour
             case PieceType.Disco:
                 renderer.color = Color.magenta;
                 pieceData.pieceType = PieceType.Disco;
+                break;
+        }
+    }
+
+    public void HighlightPotentailBonusPiece(PieceType color = PieceType.Bomb)
+    {
+        switch (color)
+        {
+            case PieceType.Bomb:
+                renderer.color = Color.cyan;
+                break;
+            case PieceType.Disco:
+                renderer.color = Color.magenta;
+                break;
+        }
+    }
+
+    public void DisableHighlight()
+    {
+        switch (pieceData.pieceType)
+        {
+            case PieceType.Red:
+                renderer.color = Color.red;
+                break;
+            case PieceType.Green:
+                renderer.color = Color.green;
+                break;
+            case PieceType.Blue:
+                renderer.color = Color.blue;
+                break;
+            case PieceType.Yellow:
+                renderer.color = Color.yellow;
                 break;
         }
     }
