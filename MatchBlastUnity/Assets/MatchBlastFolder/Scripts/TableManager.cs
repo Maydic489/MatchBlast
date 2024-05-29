@@ -12,7 +12,9 @@ public class TableManager : MonoBehaviour
     public GameObject tableObject;
     [SerializeField] GameObject spawnerPrefab;
     public GameObject piecePrefab;
+    [SerializeField] FXManager fxManager;
     [SerializeField] GameObject debrisPrefab;
+
 
     public bool isTableReady = false; //ready means all pieces are in place, but not calculate matches yet
     int filledColumn = 0;//count how many column is full
@@ -265,6 +267,9 @@ public class TableManager : MonoBehaviour
             piece.DestroyPiece();
             //TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
         }
+
+        List<Vector3> piecesPos = matchedPieces.FindAll(x => x != null).ConvertAll(x => x.transform.localPosition);
+        fxManager.PlayPopEffect(piecesPos, matchedPieces[0].pieceData.pieceType);
 
         //Invoke(nameof(MoveActivePiecesDown), 0.5f);
         MoveActivePiecesDown();
