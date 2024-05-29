@@ -15,5 +15,7 @@ public class MatchBlastManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        Application.targetFrameRate = 60;
     }
 }

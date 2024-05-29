@@ -243,7 +243,20 @@ public class TableManager : MonoBehaviour
     //call from pieceObject
     public void CheckIfPieceMatch(PieceObject selectedPiece)
     {
+        if (selectedPiece.pieceData.pieceType == PieceType.Bomb)
+        {
+            Debug.Log("Use special piece: Bomb");
+            //TODO: use bomb
+        }
+        else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
+        {
+            Debug.Log("Use special piece: Disco");
+        }
+
         var matchGroup = MatchingManager.instance.SelectMatchGroup(selectedPiece);
+
+        if(matchGroup != null && matchGroup.Count >= 6)
+            SpawnSpecialPiece(selectedPiece.pieceData.slotIndex, MatchingManager.instance.CheckForSpecialPiece(matchGroup));
 
         if(matchGroup != null)
         {
@@ -273,6 +286,21 @@ public class TableManager : MonoBehaviour
 
         //Invoke(nameof(MoveActivePiecesDown), 0.5f);
         MoveActivePiecesDown();
+    }
+
+    void UseBome(Vector2 pieceIndex)
+    {
+
+    }
+
+    void UseDisco(Vector2 pieceIndex)
+    {
+
+    }
+
+    void SpawnSpecialPiece(Vector2 slotIndex, PieceType pieceType)
+    {
+        SpawnerList[(int)slotIndex.x].SpawnSpecialPiece(slotIndex, pieceType);
     }
 }
 

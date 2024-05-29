@@ -6,6 +6,9 @@ public class PieceSpawner : MonoBehaviour
 {
     public int columnIndex;
     List<PieceObject> piecePool = new List<PieceObject>();
+    public int specialPieceIndexY = -1;
+    public PieceType specialPiece;
+
 
     private void Start()
     {
@@ -77,7 +80,7 @@ public class PieceSpawner : MonoBehaviour
                 piece.MovePieceHere(this.transform.localPosition);
                 piece.gameObject.SetActive(true);
                 piece.SetPieceData(new Vector2(columnIndex, -1));
-                piece.SetPieceColor();
+                //piece.SetPieceColor();
             }
         }
     }
@@ -109,9 +112,32 @@ public class PieceSpawner : MonoBehaviour
             if (pieceToFall == null)
                 yield break;
 
+            bool isSpecialPiece = false;
+            if((specialPiece == PieceType.Bomb || specialPiece == PieceType.Disco)
+                && freeSlot.slotIndex.y <= specialPieceIndexY && pieceToFall.pieceData.slotIndex.y < 0)
+            {
+                isSpecialPiece = true;
+            }
+
             //Debug.Log("move piece down " + pieceToFall.pieceData.slotIndex + " to " + freeSlot.slotIndex);
+            
             pieceToFall.LeaveCurrentSlot();
-            pieceToFall.SetPieceData(freeSlot.slotIndex);
+
+            if (isSpecialPiece)
+            {
+                pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false);
+
+                //reset checker
+                specialPieceIndexY = -1;
+                specialPiece = PieceType.Red;
+            }
+            else if (pieceToFall.pieceData.pieceType == PieceType.Bomb || pieceToFall.pieceData.pieceType == PieceType.Disco)
+            {
+                pieceToFall.SetPieceData(freeSlot.slotIndex, pieceToFall.pieceData.pieceType, false);
+            }
+            else
+                pieceToFall.SetPieceData(freeSlot.slotIndex);
+
             pieceToFall.MovePieceDown(freeSlot.SlotPosition.y);
 
             freeSlot.setOccupyStatus(true);
@@ -123,5 +149,11 @@ public class PieceSpawner : MonoBehaviour
             pieceToFall = null;
             lowestPieceIndexY = -2;
         }
+    }
+
+    public void SpawnSpecialPiece(Vector2 slotIndex, PieceType pieceType)
+    {
+        specialPieceIndexY = (int)slotIndex.y;
+        specialPiece = pieceType;
     }
 }

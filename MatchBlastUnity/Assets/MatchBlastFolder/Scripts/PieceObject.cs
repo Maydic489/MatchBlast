@@ -8,6 +8,8 @@ public class PieceObject : MonoBehaviour
 {
     public PieceData pieceData;
     public SpriteRenderer renderer;
+    [SerializeField] SpriteRenderer specialIcon;
+    [SerializeField] Sprite hintIconSprite;
     [SerializeField] Ease easeType = Ease.OutBounce;
     int moveDirection = -1;
 
@@ -34,6 +36,9 @@ public class PieceObject : MonoBehaviour
     public void MovePieceDown(float newPosY)
     {
         transform.DOLocalMoveY(newPosY, 0.5f).SetEase(easeType);
+        transform.localScale = new Vector3(0.5f, 1.5f, 1);
+        transform.DOScaleY(1, 0.5f).SetEase(easeType);
+        transform.DOScaleX(1, 0.5f).SetEase(easeType);
     }
 
     public void MovePieceHere(Vector2 newPos)
@@ -41,14 +46,26 @@ public class PieceObject : MonoBehaviour
         transform.localPosition = newPos;
     }
 
-    public void SetPieceData(Vector2 slotIndex)
+    public void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true)
     {
-        if(pieceData == null)
+        if (pieceData == null)
         {
-            pieceData = new PieceData(PieceType.Red, slotIndex);
+            pieceData = new PieceData(piecetype, slotIndex);
         }
         else
+        {
             pieceData.slotIndex = slotIndex;
+            pieceData.pieceType = piecetype;
+
+            if(pieceData.pieceType == PieceType.Bomb)
+                specialIcon.enabled = true;
+            else if(pieceData.pieceType == PieceType.Disco)
+                specialIcon.enabled = true;
+            else if(pieceData.pieceType != PieceType.Bomb && pieceData.pieceType != PieceType.Disco)
+                specialIcon.enabled = false;
+        }
+
+        SetPieceColor(randomColor, piecetype);
     }
 
     public void LeaveCurrentSlot()

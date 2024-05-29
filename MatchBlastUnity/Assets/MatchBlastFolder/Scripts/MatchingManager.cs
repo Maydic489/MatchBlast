@@ -199,7 +199,7 @@ public class MatchingManager : MonoBehaviour
                         //compensate for removed a group, have to check same index again that now have new group
                         j--;
 
-                        StartCoroutine(CheckForSpecialPiece(groupPieces[i]));
+                        StartCoroutine(SetForSpecialPiece(groupPieces[i]));
                     }
                 }
             }
@@ -265,18 +265,18 @@ public class MatchingManager : MonoBehaviour
         }
     }
 
-    IEnumerator CheckForSpecialPiece(List<PieceObject> pieceObjects)
+    IEnumerator SetForSpecialPiece(List<PieceObject> pieceObjects)
     {
         yield return new WaitUntil(() => TableManager.instance.isReadyToTouch);
 
-        if(pieceObjects.Count >= 10)
+        if(CheckForSpecialPiece(pieceObjects) == PieceType.Disco)
         {
             foreach (PieceObject piece in pieceObjects)
             {
                 piece.HighlightPotentailBonusPiece(PieceType.Disco);
             }
         }
-        else if(pieceObjects.Count >= 6)
+        else if(CheckForSpecialPiece(pieceObjects) == PieceType.Bomb)
         {
             foreach (PieceObject piece in pieceObjects)
             {
@@ -289,6 +289,22 @@ public class MatchingManager : MonoBehaviour
             {
                 piece.SetPieceColor(false, piece.pieceData.pieceType);
             }
+        }
+    }
+
+    public PieceType CheckForSpecialPiece(List<PieceObject> pieceObjects)
+    {
+        if (pieceObjects.Count >= 10)
+        {
+            return PieceType.Disco;
+        }
+        else if (pieceObjects.Count >= 6)
+        {
+            return PieceType.Bomb;
+        }
+        else
+        {
+            return PieceType.Red;
         }
     }
 }
