@@ -14,8 +14,10 @@ public class TableManager : MonoBehaviour
     public GameObject piecePrefab;
     [SerializeField] GameObject debrisPrefab;
 
-    public bool isTableReady = false; //ready means all pieces are in place
-    
+    public bool isTableReady = false; //ready means all pieces are in place, but not calculate matches yet
+    int filledColumn = 0;//count how many column is full
+    public bool isReadyToTouch { get; private set; }
+
     public TableSlot[][] TableSlotArray; //[y][x]
     List<PieceSpawner> SpawnerList = new List<PieceSpawner>();
 
@@ -52,7 +54,7 @@ public class TableManager : MonoBehaviour
         SetTableSize(10,10);
         PlacingEachSpawner();
 
-        RefillTable(true);
+        FillTable(true);
     }
 
     public void SetTableSize(int sizeX, int sizeY)
@@ -146,17 +148,36 @@ public class TableManager : MonoBehaviour
         {
             if (!TableSlotArray[i][columnIndex].havePiece)
             {
-                Debug.Log("Found lowest available slot: " + TableSlotArray[i][columnIndex].slotIndex);
+                //Debug.Log("Found lowest available slot: " + TableSlotArray[i][columnIndex].slotIndex);
                 return TableSlotArray[i][columnIndex];
             }
         }
 
-        Debug.Log("No available slot found "+columnIndex);
+        //check if every column refilled
+        if(filledColumn < _tableSize.y -1)
+        {
+            Debug.Log("Column " + columnIndex + " is full");
+            filledColumn++;
+        }
+        else
+        {
+            Debug.Log("Table is ready");
+            filledColumn = 0;
+            //Invoke(nameof(InvokeTableReadyEvent), 1);
+            InvokeTableReadyEvent();
+        }
+
         return null;
     }
 
     public void PieceLeaveCurrentSlot(Vector2 slotIndex)
     {
+        //for check reused piece
+        if(slotIndex.y < 0)
+        {
+            return;
+        }
+
         TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].setOccupyStatus(false);
         Debug.Log("Piece leave slot " + slotIndex + " occupy " + TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].havePiece);
     }
@@ -188,12 +209,12 @@ public class TableManager : MonoBehaviour
     {
         foreach (PieceSpawner spawner in SpawnerList)
         {
-            spawner.MoveActivePiecesDown();
+            spawner.RefillColumn();
         }
     }
 
     //make inactive piece in pool active and move it to the lowest available slot
-    void RefillTable(bool isFirstTime = false)
+    void FillTable(bool isFirstTime = false)
     {
         Debug.Log("Refill Table");
         foreach (PieceSpawner spawner in SpawnerList)
@@ -201,12 +222,20 @@ public class TableManager : MonoBehaviour
             spawner.MoveNewPieceDown(isFirstTime);
         }
 
-        Invoke(nameof(InvokeTableReadyEvent), 2);
+        //Invoke(nameof(InvokeTableReadyEvent), 1);
     }
 
     void InvokeTableReadyEvent()
     {
         tableReadyEvent.Invoke();
+        
+
+        Invoke(nameof(InvokeReadyToTouch), 0.5f);//the same duration as falling animation
+    }
+
+    void InvokeReadyToTouch()
+    {
+        isReadyToTouch = true;
     }
 
     //call from pieceObject
@@ -222,14 +251,17 @@ public class TableManager : MonoBehaviour
 
     void DestroyMatchGroup(List<PieceObject> matchedPieces)
     {
+        isReadyToTouch = false;
+
         foreach (PieceObject piece in matchedPieces)
         {
             piece.DestroyPiece();
-            TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
+            //TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
         }
 
         Debug.Log("destroy group");
-        Invoke(nameof(MoveActivePiecesDown), 0.5f);
+        //Invoke(nameof(MoveActivePiecesDown), 0.5f);
+        MoveActivePiecesDown();
     }
 }
 

@@ -21,12 +21,25 @@ public class PieceObject : MonoBehaviour
         if (pieceData == null)
             pieceData = new PieceData(GetRandomPieceColor(), new Vector2(0, 0));
         else
-            SetRendererColor(GetRandomPieceColor());
+            SetPieceColor();
+    }
+
+    public void OnMouseDown()
+    {
+        if(TableManager.instance.isReadyToTouch)
+        {
+            TableManager.instance.CheckIfPieceMatch(this);
+        }
     }
 
     public void MovePieceDown(float newPosY)
     {
         transform.DOLocalMoveY(newPosY, 0.5f).SetEase(easeType);
+    }
+
+    public void MovePieceHere(Vector2 newPos)
+    {
+        transform.localPosition = newPos;
     }
 
     public void SetPieceData(Vector2 slotIndex)
@@ -44,8 +57,11 @@ public class PieceObject : MonoBehaviour
         TableManager.instance.PieceLeaveCurrentSlot(pieceData.slotIndex);
     }
 
-    void SetRendererColor(PieceType color)
+    public void SetPieceColor(bool randomColor = true, PieceType color = PieceType.Red)
     {
+        if (randomColor)
+            color = GetRandomPieceColor();
+
         switch (color)
         {
             case PieceType.Red:
@@ -80,17 +96,11 @@ public class PieceObject : MonoBehaviour
         return (PieceType)UnityEngine.Random.Range(0, 4);
     }
 
-    public void OnMouseDown()
-    {
-        Debug.Log("Piece clicked");
-
-        TableManager.instance.CheckIfPieceMatch(this);
-    }
-
     //not really destroy, just return to pool
     public void DestroyPiece()
     {
         this.gameObject.SetActive(false);
+        LeaveCurrentSlot();
     }
 }
 

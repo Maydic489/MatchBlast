@@ -57,20 +57,38 @@ public class PieceSpawner : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
         }
+
+        //trigger table ready event
+        TableManager.instance.FindLowestAvailableSlot(columnIndex);
     }
 
-    public void MoveActivePiecesDown()
+    public void RefillColumn()
     {
+        RecallUsedPiece();
         StartCoroutine(MoveActivePiecesDownInterval());
+    }
+
+    void RecallUsedPiece()
+    {
+        foreach (PieceObject piece in piecePool)
+        {
+            if (piece.gameObject.activeSelf != true)
+            {
+                piece.MovePieceHere(this.transform.localPosition);
+                piece.gameObject.SetActive(true);
+                piece.SetPieceData(new Vector2(columnIndex, -1));
+                piece.SetPieceColor();
+            }
+        }
     }
 
     IEnumerator MoveActivePiecesDownInterval()
     {
-        yield return new WaitForEndOfFrame();
+        //yield return new WaitForEndOfFrame();
 
         TableSlot freeSlot;
         PieceObject pieceToFall = new PieceObject();
-        int lowestPieceIndexY = -1; //lower number means higher position
+        int lowestPieceIndexY = -2; //lower number means higher position
 
         while (TableManager.instance.FindLowestAvailableSlot(columnIndex) != null)
         {
@@ -80,7 +98,7 @@ public class PieceSpawner : MonoBehaviour
             {
                 if (piece.gameObject.activeSelf == true && piece.pieceData.slotIndex.y < freeSlot.slotIndex.y)
                 {
-                    if(piece.pieceData.slotIndex.y > lowestPieceIndexY || lowestPieceIndexY == -1)
+                    if(piece.pieceData.slotIndex.y > lowestPieceIndexY || lowestPieceIndexY == -2)
                     {
                         lowestPieceIndexY = (int)piece.pieceData.slotIndex.y;
                         pieceToFall = piece;
@@ -91,7 +109,7 @@ public class PieceSpawner : MonoBehaviour
             if (pieceToFall == null)
                 yield break;
 
-            Debug.Log("move piece down " + pieceToFall.pieceData.slotIndex + " to " + freeSlot.slotIndex);
+            //Debug.Log("move piece down " + pieceToFall.pieceData.slotIndex + " to " + freeSlot.slotIndex);
             pieceToFall.LeaveCurrentSlot();
             pieceToFall.SetPieceData(freeSlot.slotIndex);
             pieceToFall.MovePieceDown(freeSlot.SlotPosition.y);
@@ -99,10 +117,11 @@ public class PieceSpawner : MonoBehaviour
             freeSlot.setOccupyStatus(true);
             freeSlot.pieceObject = pieceToFall;
             
-            yield return new WaitForSeconds(0.1f);
+            //yield return new WaitForSeconds(0.1f);
+            //yield return new WaitForEndOfFrame();
 
             pieceToFall = null;
-            lowestPieceIndexY = -1;
+            lowestPieceIndexY = -2;
         }
     }
 }
