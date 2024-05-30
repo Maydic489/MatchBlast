@@ -29,7 +29,9 @@ public class PieceObject : MonoBehaviour
 
     public void ResetPiece()
     {
-
+        renderer.transform.localScale = Vector3.one;
+        renderer.flipY = false;
+        renderer.flipX = false;
     }
 
     public void OnMouseDown()
@@ -57,6 +59,11 @@ public class PieceObject : MonoBehaviour
         transform.localPosition = newPos;
     }
 
+    public void ShakingPiece()
+    {
+        transform.DOShakeRotation(0.5f, 30, 30);
+    }
+
     public void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true, PieceType discoColor = PieceType.Red)
     {
         if (pieceData == null)
@@ -65,6 +72,7 @@ public class PieceObject : MonoBehaviour
         }
         else
         {
+            ResetPiece();
             pieceData.slotIndex = slotIndex;
             renderer.sortingOrder = (int)slotIndex.y * -1;
             iconRenderer.sortingOrder = (int)slotIndex.y * -1;
@@ -76,6 +84,7 @@ public class PieceObject : MonoBehaviour
             {
                 renderer.sprite = pieceSprites[2];
                 pieceData.discoColor = discoColor;
+                StartCoroutine(DiscoAnimation());
             }
             else if (!MatchingManager.instance.IsThisASpecialPiece(pieceData))
             {
@@ -185,6 +194,43 @@ public class PieceObject : MonoBehaviour
     {
         this.gameObject.SetActive(false);
         LeaveCurrentSlot();
+    }
+
+    IEnumerator DiscoAnimation()
+    {
+        while (pieceData.pieceType == PieceType.Disco)
+        {
+            renderer.transform.DOScale(1.2f, 0.5f);
+            FlipDisco();
+            yield return new WaitForSeconds(0.5f);
+            renderer.transform.DOScale(1, 0.5f);
+            FlipDisco();
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        renderer.transform.localScale = Vector3.one;
+        renderer.flipY = false;
+        renderer.flipX = false;
+    }
+
+    void FlipDisco()
+    {
+        if(!renderer.flipX && !renderer.flipY)
+        {
+            renderer.flipX = true;
+        }
+        else if(renderer.flipX && !renderer.flipY)
+        {
+            renderer.flipY = true;
+        }
+        else if(renderer.flipX && renderer.flipY)
+        {
+            renderer.flipX = false;
+        }
+        else if(!renderer.flipX && renderer.flipY)
+        {
+            renderer.flipY = false;
+        }
     }
 
     Color GetDiscoColor(PieceType discoColor)

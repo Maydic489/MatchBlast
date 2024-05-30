@@ -39,6 +39,7 @@ public class MatchingManager : MonoBehaviour
         else
         {
             Debug.Log("no match group found");
+            selectedPiece.ShakingPiece();
             return null;
         }
     }
