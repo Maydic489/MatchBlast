@@ -13,7 +13,6 @@ public class PieceObject : MonoBehaviour
     [SerializeField] List<Sprite> PieceIcons = new List<Sprite>();//0 = X,1 = O, 2 = SQ, 3 = TRI
     [SerializeField] List<Sprite> hintIconSprite = new List<Sprite>();//0 = bomb, 1 = disco
     [SerializeField] Ease easeType = Ease.OutBounce;
-    int moveDirection = -1;
 
     private void Start()
     {
