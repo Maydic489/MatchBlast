@@ -299,20 +299,31 @@ public class TableManager : MonoBehaviour
     {
         List<PieceObject> destroyPiece = new List<PieceObject>();
 
-        for(int i = 0; i < _tableSize.x; i++)
+        for (int i = 0; i < _tableSize.x; i++)
         {
-            for(int j = 0; j < _tableSize.y; j++)
+            for (int j = 0; j < _tableSize.y; j++)
             {
                 if (i == pieceIndex.x || j == pieceIndex.y)
                 {
-                    TableSlotArray[j][i].pieceObject.DestroyPiece();
                     destroyPiece.Add(TableSlotArray[j][i].pieceObject);
-                    //TODO: add piece that closest to the bomb first, for better FX visual
                 }
             }
         }
 
-        //Debug.Break();
+        //Sort the pieces by distance to the bomb piece
+        destroyPiece.Sort((piece1, piece2) =>
+        {
+            float distance1 = Vector2.Distance(pieceIndex, piece1.pieceData.slotIndex);
+            float distance2 = Vector2.Distance(pieceIndex, piece2.pieceData.slotIndex);
+            return distance1.CompareTo(distance2);
+        });
+
+        //Destroy the pieces in order
+        foreach (PieceObject piece in destroyPiece)
+        {
+            piece.DestroyPiece();
+        }
+
         DestroyAfterEffect(destroyPiece, PieceType.Bomb);
     }
 
