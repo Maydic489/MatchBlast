@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class TableManager : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class TableManager : MonoBehaviour
     Coroutine discoCo;
 
     public UnityEvent tableReadyEvent;
+    public UnityEvent movePieceDownEvent;
 
     public static TableManager instance = null;
     void Awake()
@@ -45,6 +47,11 @@ public class TableManager : MonoBehaviour
         if (tableReadyEvent == null)
         {
             tableReadyEvent = new UnityEvent();
+        }
+
+        if (movePieceDownEvent == null)
+        {
+            movePieceDownEvent = new UnityEvent();
         }
 
         //for testing, to get same random table everytimes
@@ -211,10 +218,7 @@ public class TableManager : MonoBehaviour
     //move all active pieces down
     void MoveActivePiecesDown()
     {
-        foreach (PieceSpawner spawner in SpawnerList)
-        {
-            spawner.RefillColumn();
-        }
+        movePieceDownEvent.Invoke();
     }
 
     //make inactive piece in pool active and move it to the lowest available slot

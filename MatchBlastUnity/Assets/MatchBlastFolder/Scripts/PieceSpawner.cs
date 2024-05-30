@@ -13,6 +13,8 @@ public class PieceSpawner : MonoBehaviour
 
     private void Start()
     {
+        TableManager.instance.movePieceDownEvent.AddListener(RefillColumn);
+
         CreatePiecePool();
 
         //StartCoroutine(MoveEachNewPieceDown(true));
