@@ -89,7 +89,8 @@ public class MatchingManager : MonoBehaviour
                 {
                     if (_tableManager.TableSlotArray[i][j].havePiece && _tableManager.TableSlotArray[i][j + 1].havePiece)
                     {
-                        if (_tableManager.TableSlotArray[i][j].pieceObject.pieceData.pieceType == _tableManager.TableSlotArray[i][j + 1].pieceObject.pieceData.pieceType)
+                        if (_tableManager.TableSlotArray[i][j].pieceObject.pieceData.pieceType == _tableManager.TableSlotArray[i][j + 1].pieceObject.pieceData.pieceType
+                            && !IsThisASpecialPiece(_tableManager.TableSlotArray[i][j].pieceObject.pieceData))
                         {
                             if(matchedPieces.Count == 0)
                                 matchedPieces.Add(_tableManager.TableSlotArray[i][j].pieceObject);
@@ -164,6 +165,8 @@ public class MatchingManager : MonoBehaviour
                 CombineAdjacentMatchGroup();
             }
             while (groupPieces.Count > 1 && oldGroupCount != groupPieces.Count);
+
+            //TODO: if there're no match at all, respawn the table
         }
         else
         {
@@ -307,5 +310,15 @@ public class MatchingManager : MonoBehaviour
         {
             return PieceType.Red;
         }
+    }
+
+    public bool IsThisASpecialPiece(PieceData piece)
+    {
+        if (piece.pieceType == PieceType.Bomb || piece.pieceType == PieceType.Disco)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

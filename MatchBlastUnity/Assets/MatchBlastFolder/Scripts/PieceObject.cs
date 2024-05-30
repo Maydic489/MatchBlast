@@ -75,7 +75,7 @@ public class PieceObject : MonoBehaviour
                 renderer.sprite = pieceSprites[2];
                 pieceData.discoColor = discoColor;
             }
-            else if (pieceData.pieceType != PieceType.Bomb && pieceData.pieceType != PieceType.Disco)
+            else if (!MatchingManager.instance.IsThisASpecialPiece(pieceData))
             {
                 renderer.sprite = pieceSprites[0];
             }

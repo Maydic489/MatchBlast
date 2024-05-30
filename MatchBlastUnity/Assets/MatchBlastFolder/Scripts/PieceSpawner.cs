@@ -122,7 +122,7 @@ public class PieceSpawner : MonoBehaviour
             
             pieceToFall.LeaveCurrentSlot();
 
-            if (pieceToFall.pieceData.pieceType == PieceType.Bomb || pieceToFall.pieceData.pieceType == PieceType.Disco)
+            if (MatchingManager.instance.IsThisASpecialPiece(pieceToFall.pieceData))
             {
                 pieceToFall.SetPieceData(freeSlot.slotIndex, pieceToFall.pieceData.pieceType, false, pieceToFall.pieceData.discoColor);
             }
