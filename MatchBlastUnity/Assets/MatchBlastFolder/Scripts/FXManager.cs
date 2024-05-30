@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +7,16 @@ public class FXManager : MonoBehaviour
 {
     [SerializeField] ParticleSystem popFX;
     [SerializeField] Transform FXTransform;
-    ParticleSystem.MainModule main;
+    [SerializeField] TrailRenderer discoTrail;
+    [SerializeField] ParticleSystem discoFX;
+    [SerializeField] Transform discoFXTransform;
+    ParticleSystem.MainModule mainPopFX;
+    ParticleSystem.MainModule mainDiscoFX;
 
     private void Start()
     {
-        main = popFX.main;
+        mainPopFX = popFX.main;
+        mainDiscoFX = discoFX.main;
     }
 
     public void PlayPopEffect(List<Vector3> popPositions, PieceType pieceType)
@@ -18,7 +24,7 @@ public class FXManager : MonoBehaviour
         //Debug.Log("FX color: " + pieceType.ToString());
         //Debug.Log("Get color: " + GetColor(pieceType).ToString());
 
-        main.startColor = GetColor(pieceType);
+        mainPopFX.startColor = GetColor(pieceType);
 
         StartCoroutine(MoveFXThroughPieces(popPositions));
     }
@@ -26,6 +32,7 @@ public class FXManager : MonoBehaviour
     IEnumerator MoveFXThroughPieces(List<Vector3> popPositions)
     {
         popFX.Stop();
+        //popFX.Clear();
 
         foreach (Vector3 pos in popPositions)
         {
@@ -37,6 +44,34 @@ public class FXManager : MonoBehaviour
         }
 
         FXTransform.localPosition = Vector3.down * 100;
+    }
+
+    public IEnumerator PlayTrailEffect(Vector3 startPos, Vector3 endPos, PieceType pieceType)
+    {
+        startPos = new Vector3(startPos.x, startPos.y, -0.5f);
+        endPos = new Vector3(endPos.x, endPos.y, -0.5f);
+
+        discoFXTransform.localPosition = startPos;
+
+        discoFXTransform.DOLocalMove(endPos, 0.15f);
+
+        discoTrail.Clear();
+        discoTrail.startColor = GetColor(pieceType);
+        discoTrail.emitting = true;
+
+        discoFX.Clear();
+        mainDiscoFX.startColor = GetColor(pieceType);
+        discoFX.Play();
+
+        yield return new WaitForSeconds(0.15f);
+
+        PlayPopEffect(new List<Vector3> { endPos }, pieceType);
+
+        discoTrail.Clear();
+        discoTrail.emitting = false;
+
+        discoFX.Clear();
+        discoFX.Stop();
     }
 
     Color GetColor(PieceType type)
