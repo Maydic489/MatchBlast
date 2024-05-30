@@ -36,9 +36,13 @@ public class PieceObject : MonoBehaviour
     public void MovePieceDown(float newPosY, float time)
     {
         transform.DOLocalMoveY(newPosY, time).SetEase(easeType);
-        transform.localScale = new Vector3(0.5f, 1.5f, 1);
-        transform.DOScaleY(1, time).SetEase(easeType);
-        transform.DOScaleX(1, time).SetEase(easeType);
+
+        if (time == 0.7f)
+        {
+            transform.localScale = new Vector3(0.5f, 1.5f, 1);
+            transform.DOScaleY(1, time).SetEase(easeType);
+            transform.DOScaleX(1, time).SetEase(easeType);
+        }
     }
 
     public void MovePieceHere(Vector2 newPos)
@@ -57,11 +61,14 @@ public class PieceObject : MonoBehaviour
             pieceData.slotIndex = slotIndex;
             pieceData.pieceType = piecetype;
 
-            if(pieceData.pieceType == PieceType.Bomb)
+            if (pieceData.pieceType == PieceType.Bomb)
                 specialIcon.enabled = true;
-            else if(pieceData.pieceType == PieceType.Disco)
+            else if (pieceData.pieceType == PieceType.Disco)
+            {
                 specialIcon.enabled = true;
-            else if(pieceData.pieceType != PieceType.Bomb && pieceData.pieceType != PieceType.Disco)
+                pieceData.discoColor = discoColor;
+            }
+            else if (pieceData.pieceType != PieceType.Bomb && pieceData.pieceType != PieceType.Disco)
                 specialIcon.enabled = false;
         }
 

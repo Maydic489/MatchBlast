@@ -88,7 +88,10 @@ public class PieceSpawner : MonoBehaviour
 
     IEnumerator MoveActivePiecesDownInterval()
     {
-        //yield return new WaitForEndOfFrame();
+        if(specialPieceIndexY != -1)
+        {
+            yield return StartCoroutine(SpawnSpecialPiece());
+        }
 
         TableSlot freeSlot;
         PieceObject pieceToFall = new PieceObject();
@@ -115,33 +118,17 @@ public class PieceSpawner : MonoBehaviour
 
             float fallTime = pieceToFall.pieceData.slotIndex.y < 0 ? 0.7f : 0.5f;
 
-            bool isSpecialPiece = false;
-            if((specialPiece == PieceType.Bomb || specialPiece == PieceType.Disco)
-                && freeSlot.slotIndex.y <= specialPieceIndexY && pieceToFall.pieceData.slotIndex.y < 0)
-            {
-                isSpecialPiece = true;
-            }
-
             //Debug.Log("move piece down " + pieceToFall.pieceData.slotIndex + " to " + freeSlot.slotIndex);
             
             pieceToFall.LeaveCurrentSlot();
 
-            if (isSpecialPiece)
+            if (pieceToFall.pieceData.pieceType == PieceType.Bomb || pieceToFall.pieceData.pieceType == PieceType.Disco)
             {
-                if(specialPiece == PieceType.Bomb)
-                    pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false);
-                else if(specialPiece == PieceType.Disco)
-                    pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false, discoColor);
-
-                //reset checker
-                specialPieceIndexY = -1;
-                specialPiece = PieceType.Red;
+                pieceToFall.SetPieceData(freeSlot.slotIndex, pieceToFall.pieceData.pieceType, false, pieceToFall.pieceData.discoColor);
             }
-            else if (pieceToFall.pieceData.pieceType == PieceType.Bomb || pieceToFall.pieceData.pieceType == PieceType.Disco)
-            {
-                pieceToFall.SetPieceData(freeSlot.slotIndex, pieceToFall.pieceData.pieceType, false);
-            }
-            else
+            else if(pieceToFall.pieceData.slotIndex.y >= 0) //still active piece
+                pieceToFall.SetPieceData(freeSlot.slotIndex, pieceToFall.pieceData.pieceType, false, default);
+            else //piece from pool
                 pieceToFall.SetPieceData(freeSlot.slotIndex);
 
             pieceToFall.MovePieceDown(freeSlot.SlotPosition.y, fallTime);
@@ -157,10 +144,47 @@ public class PieceSpawner : MonoBehaviour
         }
     }
 
-    public void SpawnSpecialPiece(Vector2 slotIndex, PieceType specialType, PieceType _discoColor)
+    public void SetupSpecialPiece(Vector2 slotIndex, PieceType specialType, PieceType _discoColor)
     {
         specialPieceIndexY = (int)slotIndex.y;
         specialPiece = specialType;
         discoColor = _discoColor;
+    }
+
+    IEnumerator SpawnSpecialPiece()
+    {
+        TableSlot freeSlot;
+        PieceObject pieceToFall = new PieceObject();
+
+        freeSlot = TableManager.instance.TableSlotArray[specialPieceIndexY][columnIndex];
+
+        if (freeSlot == null)
+            yield break;
+
+        foreach (PieceObject piece in piecePool)
+        {
+            if (piece.gameObject.activeSelf == true && piece.pieceData.slotIndex.y == -1)
+            {
+                pieceToFall = piece;
+            }
+        }
+
+        if (pieceToFall == null)
+            yield break;
+
+        if (specialPiece == PieceType.Bomb)
+            pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false);
+        else if (specialPiece == PieceType.Disco)
+            pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false, discoColor);
+
+        pieceToFall.MovePieceHere(freeSlot.SlotPosition);
+
+        freeSlot.setOccupyStatus(true);
+        freeSlot.pieceObject = pieceToFall;
+
+        //reset checker
+        specialPieceIndexY = -1;
+        specialPiece = PieceType.Red;
+        discoColor = PieceType.Red;
     }
 }

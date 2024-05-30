@@ -251,14 +251,14 @@ public class TableManager : MonoBehaviour
         }
         else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
         {
-            UseDisco(selectedPiece, selectedPiece.pieceData.slotIndex, selectedPiece.pieceData.discoColor);
+            UseDisco(selectedPiece, selectedPiece.pieceData.discoColor);
             return;
         }
 
         var matchGroup = MatchingManager.instance.SelectMatchGroup(selectedPiece);
 
         if(matchGroup != null && matchGroup.Count >= 6)
-            SpawnSpecialPiece(selectedPiece.pieceData, MatchingManager.instance.CheckForSpecialPiece(matchGroup));
+            SpawnSpecialPiece(matchGroup, selectedPiece.pieceData, MatchingManager.instance.CheckForSpecialPiece(matchGroup));
 
         if(matchGroup != null)
         {
@@ -291,8 +291,8 @@ public class TableManager : MonoBehaviour
         List<Vector3> piecesPos = matchedPieces.FindAll(x => x != null).ConvertAll(x => x.transform.localPosition);
         fxManager.PlayPopEffect(piecesPos, _pieceType);
 
-        //Invoke(nameof(MoveActivePiecesDown), 0.5f);
-        MoveActivePiecesDown();
+        Invoke(nameof(MoveActivePiecesDown), 0.1f);
+        //MoveActivePiecesDown();
     }
 
     void UseBome(Vector2 pieceIndex)
@@ -316,10 +316,11 @@ public class TableManager : MonoBehaviour
         DestroyAfterEffect(destroyPiece, PieceType.Bomb);
     }
 
-    void UseDisco(PieceObject discoPiece, Vector2 pieceIndex, PieceType discoColor)
+    void UseDisco(PieceObject discoPiece, PieceType discoColor)
     {
         List<PieceObject> destroyPiece = new List<PieceObject>();
 
+        destroyPiece.Add(discoPiece);
         discoPiece.DestroyPiece();
 
         for (int i = 0; i < _tableSize.x; i++)
@@ -334,15 +335,23 @@ public class TableManager : MonoBehaviour
             }
         }
 
-        Debug.Break();
-        DestroyAfterEffect(destroyPiece, PieceType.Disco);
-
-        Debug.Log("disco color " + discoColor + destroyPiece.Count + " pieces");
+        DestroyAfterEffect(destroyPiece, discoColor);
     }
 
-    void SpawnSpecialPiece(PieceData pieceData, PieceType specialType)
+    void SpawnSpecialPiece(List<PieceObject> _matchGroup, PieceData pieceData, PieceType specialType)
     {
-        SpawnerList[(int)pieceData.slotIndex.x].SpawnSpecialPiece(pieceData.slotIndex, specialType, pieceData.pieceType);
+        //spawn special piece in the lowest piece in the same column as selected piece
+        //find lowest piece in column (highter number = lower position)
+        Vector2 lowestPieceIndex = pieceData.slotIndex;
+        //foreach (PieceObject piece in _matchGroup)
+        //{
+        //    if (piece.pieceData.slotIndex.y > lowestPieceIndex.y && piece.pieceData.slotIndex.x == pieceData.slotIndex.x)
+        //    {
+        //        lowestPieceIndex = piece.pieceData.slotIndex;
+        //    }
+        //}
+
+        SpawnerList[(int)pieceData.slotIndex.x].SetupSpecialPiece(lowestPieceIndex, specialType, pieceData.pieceType);
     }
 }
 
