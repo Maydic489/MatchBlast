@@ -83,7 +83,7 @@ public class MatchingManager : MonoBehaviour
 
             for (int j = 0; j < _tableManager.TableSize.x; j++)
             {
-                _tableManager.TableSlotArray[i][j].pieceObject.DisableHighlight();
+                //_tableManager.TableSlotArray[i][j].pieceObject.DisableHighlight();
 
                 if (j < _tableManager.TableSize.x - 1)
                 {
@@ -287,6 +287,7 @@ public class MatchingManager : MonoBehaviour
         {
             foreach (PieceObject piece in pieceObjects)
             {
+                piece.DisableHighlight();
                 piece.SetPieceColor(false, piece.pieceData.pieceType);
             }
         }

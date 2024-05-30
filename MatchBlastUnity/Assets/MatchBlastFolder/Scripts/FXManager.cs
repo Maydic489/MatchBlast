@@ -44,15 +44,15 @@ public class FXManager : MonoBehaviour
         switch (type)
         {
             case PieceType.Red:
-                return Color.red;
+                return MatchBlastManager.instance.red;
             case PieceType.Green:
-                return Color.green;
+                return MatchBlastManager.instance.green;
             case PieceType.Blue:
-                return Color.blue;
+                return MatchBlastManager.instance.blue;
             case PieceType.Yellow:
-                return Color.yellow;
+                return MatchBlastManager.instance.yellow;
             case PieceType.Bomb:
-                return Color.black;
+                return MatchBlastManager.instance.brown;
             case PieceType.Disco:
                 return Color.magenta;
             default:

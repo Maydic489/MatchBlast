@@ -8,6 +8,7 @@ public class MatchBlastManager : MonoBehaviour
     public Color green;
     public Color blue;
     public Color yellow;
+    public Color brown;
 
     public static MatchBlastManager instance = null;
     void Awake()
