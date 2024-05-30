@@ -46,7 +46,7 @@ public class PieceObject : MonoBehaviour
         transform.localPosition = newPos;
     }
 
-    public void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true)
+    public void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true, PieceType discoColor = PieceType.Red)
     {
         if (pieceData == null)
         {
@@ -157,6 +157,7 @@ public class PieceData
 {
     public PieceType pieceType;
     public Vector2 slotIndex;
+    public PieceType discoColor;
 
     public PieceData(PieceType pieceType, Vector2 slotIndex)
     {

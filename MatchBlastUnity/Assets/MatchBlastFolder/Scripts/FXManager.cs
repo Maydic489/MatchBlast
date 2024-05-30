@@ -15,8 +15,8 @@ public class FXManager : MonoBehaviour
 
     public void PlayPopEffect(List<Vector3> popPositions, PieceType pieceType)
     {
-        Debug.Log("FX color: " + pieceType.ToString());
-        Debug.Log("Get color: " + GetColor(pieceType).ToString());
+        //Debug.Log("FX color: " + pieceType.ToString());
+        //Debug.Log("Get color: " + GetColor(pieceType).ToString());
 
         main.startColor = GetColor(pieceType);
 

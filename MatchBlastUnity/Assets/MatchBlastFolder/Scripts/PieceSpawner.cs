@@ -8,6 +8,7 @@ public class PieceSpawner : MonoBehaviour
     List<PieceObject> piecePool = new List<PieceObject>();
     public int specialPieceIndexY = -1;
     public PieceType specialPiece;
+    public PieceType discoColor;
 
 
     private void Start()
@@ -127,7 +128,10 @@ public class PieceSpawner : MonoBehaviour
 
             if (isSpecialPiece)
             {
-                pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false);
+                if(specialPiece == PieceType.Bomb)
+                    pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false);
+                else if(specialPiece == PieceType.Disco)
+                    pieceToFall.SetPieceData(freeSlot.slotIndex, specialPiece, false, discoColor);
 
                 //reset checker
                 specialPieceIndexY = -1;
@@ -153,9 +157,10 @@ public class PieceSpawner : MonoBehaviour
         }
     }
 
-    public void SpawnSpecialPiece(Vector2 slotIndex, PieceType pieceType)
+    public void SpawnSpecialPiece(Vector2 slotIndex, PieceType specialType, PieceType _discoColor)
     {
         specialPieceIndexY = (int)slotIndex.y;
-        specialPiece = pieceType;
+        specialPiece = specialType;
+        discoColor = _discoColor;
     }
 }

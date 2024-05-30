@@ -251,13 +251,14 @@ public class TableManager : MonoBehaviour
         }
         else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
         {
-            Debug.Log("Use special piece: Disco");
+            UseDisco(selectedPiece, selectedPiece.pieceData.slotIndex, selectedPiece.pieceData.discoColor);
+            return;
         }
 
         var matchGroup = MatchingManager.instance.SelectMatchGroup(selectedPiece);
 
         if(matchGroup != null && matchGroup.Count >= 6)
-            SpawnSpecialPiece(selectedPiece.pieceData.slotIndex, MatchingManager.instance.CheckForSpecialPiece(matchGroup));
+            SpawnSpecialPiece(selectedPiece.pieceData, MatchingManager.instance.CheckForSpecialPiece(matchGroup));
 
         if(matchGroup != null)
         {
@@ -296,7 +297,7 @@ public class TableManager : MonoBehaviour
 
     void UseBome(Vector2 pieceIndex)
     {
-        List<PieceObject> bombPiece = new List<PieceObject>();
+        List<PieceObject> destroyPiece = new List<PieceObject>();
 
         for(int i = 0; i < _tableSize.x; i++)
         {
@@ -305,23 +306,43 @@ public class TableManager : MonoBehaviour
                 if (i == pieceIndex.x || j == pieceIndex.y)
                 {
                     TableSlotArray[j][i].pieceObject.DestroyPiece();
-                    bombPiece.Add(TableSlotArray[j][i].pieceObject);
+                    destroyPiece.Add(TableSlotArray[j][i].pieceObject);
+                    //TODO: add piece that closest to the bomb first, for better FX visual
                 }
             }
         }
 
         //Debug.Break();
-        DestroyAfterEffect(bombPiece,PieceType.Bomb);
+        DestroyAfterEffect(destroyPiece, PieceType.Bomb);
     }
 
-    void UseDisco(Vector2 pieceIndex)
+    void UseDisco(PieceObject discoPiece, Vector2 pieceIndex, PieceType discoColor)
     {
+        List<PieceObject> destroyPiece = new List<PieceObject>();
 
+        discoPiece.DestroyPiece();
+
+        for (int i = 0; i < _tableSize.x; i++)
+        {
+            for (int j = 0; j < _tableSize.y; j++)
+            {
+                if (TableSlotArray[j][i].pieceObject.pieceData.pieceType == discoColor)
+                {
+                    TableSlotArray[j][i].pieceObject.DestroyPiece();
+                    destroyPiece.Add(TableSlotArray[j][i].pieceObject);
+                }
+            }
+        }
+
+        Debug.Break();
+        DestroyAfterEffect(destroyPiece, PieceType.Disco);
+
+        Debug.Log("disco color " + discoColor + destroyPiece.Count + " pieces");
     }
 
-    void SpawnSpecialPiece(Vector2 slotIndex, PieceType pieceType)
+    void SpawnSpecialPiece(PieceData pieceData, PieceType specialType)
     {
-        SpawnerList[(int)slotIndex.x].SpawnSpecialPiece(slotIndex, pieceType);
+        SpawnerList[(int)pieceData.slotIndex.x].SpawnSpecialPiece(pieceData.slotIndex, specialType, pieceData.pieceType);
     }
 }
 
