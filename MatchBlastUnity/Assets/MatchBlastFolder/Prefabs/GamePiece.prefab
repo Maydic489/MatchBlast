@@ -49,6 +49,7 @@ MonoBehaviour:
   pieceData:
     pieceType: 0
     slotIndex: {x: 0, y: 0}
+    discoColor: 0
   renderer: {fileID: 2112418473480862420}
   specialIcon: {fileID: 8576224880983353269}
   hintIconSprite: {fileID: 0}
@@ -151,8 +152,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1418152218357826430, guid: da6f8483d6d88d949acd74610ed776e4, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 8605259016865551136, guid: da6f8483d6d88d949acd74610ed776e4, type: 3}
+  m_Color: {r: 0.5552525, g: 0.9339623, b: 0.39208794, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -178,7 +179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6473099367818385076
 Transform:
   m_ObjectHideFlags: 0

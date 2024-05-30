@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MatchBlastManager : MonoBehaviour
 {
+    public Color red;
+    public Color green;
+    public Color blue;
+    public Color yellow;
+
     public static MatchBlastManager instance = null;
     void Awake()
     {

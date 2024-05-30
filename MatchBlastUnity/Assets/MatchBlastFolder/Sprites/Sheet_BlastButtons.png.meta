@@ -4,13 +4,28 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 2434027239295983973
-    second: Icon_Special
+    second: Icon_Circle
   - first:
       213: 7448109445624522983
-    second: Icon_Frame
+    second: Icon_Cross
   - first:
       213: 1418152218357826430
-    second: Icon_Piece
+    second: Icon_Box
+  - first:
+      213: -6616200064156270020
+    second: Icon_Triangle
+  - first:
+      213: -7823250596436495786
+    second: Icon_Cross
+  - first:
+      213: -8461371547376092832
+    second: Icon_Box
+  - first:
+      213: 275581355202067882
+    second: Icon_Disco
+  - first:
+      213: 7954699475326849410
+    second: Icon_Bomb
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -112,15 +127,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Icon_Special
+      name: Icon_Circle
       rect:
         serializedVersion: 2
         x: 0
-        y: 33
+        y: 334
         width: 73
         height: 73
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -133,15 +148,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Icon_Frame
+      name: Icon_Cross
       rect:
         serializedVersion: 2
-        x: 77
-        y: 3
-        width: 100
-        height: 100
+        x: 0
+        y: 259
+        width: 73
+        height: 73
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -154,15 +169,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Icon_Piece
+      name: Icon_Box
       rect:
         serializedVersion: 2
-        x: 181
-        y: 6
-        width: 100
-        height: 100
+        x: 0
+        y: 185
+        width: 73
+        height: 73
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -170,6 +185,111 @@ TextureImporter:
       bones: []
       spriteID: e7386accde94ea310800000000000000
       internalID: 1418152218357826430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Triangle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 73
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c328c0588198e24a0800000000000000
+      internalID: -6616200064156270020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Frame
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 301
+        width: 106
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6523a8a280b3e6390800000000000000
+      internalID: -7823250596436495786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Piece
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 189
+        width: 100
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 069fc0e686b239a80800000000000000
+      internalID: -8461371547376092832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Disco
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 90
+        width: 98
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aad3a8f48cf03d300800000000000000
+      internalID: 275581355202067882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Bomb
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 88
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 281d7d9e605c46e60800000000000000
+      internalID: 7954699475326849410
       vertices: []
       indices: 
       edges: []
