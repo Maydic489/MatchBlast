@@ -319,6 +319,7 @@ MonoBehaviour:
   tableObject: {fileID: 1744993913}
   spawnerPrefab: {fileID: 8195279948496149397, guid: 3886204b87073874581936ff52f1a603, type: 3}
   piecePrefab: {fileID: 2112418473015845601, guid: 960645c0b9f927d4e9ba31f6ea7f025d, type: 3}
+  ObstaclePrefab: {fileID: 2112418473015845601, guid: 960645c0b9f927d4e9ba31f6ea7f025d, type: 3}
   fxManager: {fileID: 545997005}
   isTableReady: 0
   randomSeed: 60

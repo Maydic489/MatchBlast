@@ -131,8 +131,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceData:
     pieceType: 0
-    slotIndex: {x: 0, y: 0}
+    slotIndex: {x: 0, y: -1}
     discoColor: 0
+  easeType: 30
   renderer: {fileID: 2112418473480862420}
   iconRenderer: {fileID: 5382988795748696905}
   pieceSprites:
@@ -147,7 +148,6 @@ MonoBehaviour:
   hintIconSprite:
   - {fileID: 8632972152546690238, guid: da6f8483d6d88d949acd74610ed776e4, type: 3}
   - {fileID: -5019914424573224282, guid: da6f8483d6d88d949acd74610ed776e4, type: 3}
-  easeType: 30
 --- !u!61 &19491184
 BoxCollider2D:
   m_ObjectHideFlags: 0

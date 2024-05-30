@@ -14,6 +14,7 @@ public class TableManager : MonoBehaviour
     public GameObject tableObject;
     [SerializeField] GameObject spawnerPrefab;
     public GameObject piecePrefab;
+    public GameObject ObstaclePrefab;
     [SerializeField] FXManager fxManager;
 
 
@@ -62,8 +63,11 @@ public class TableManager : MonoBehaviour
 
     private void Start()
     {
-        SetTableSize(12,10);
+        SetTableSize(10,10);
         PlacingEachSpawner();
+
+        //ReserveSpotForObstacle(new Vector2(3, 1), PieceType.ObstacleBig);
+        ReserveSpotForObstacle(new Vector2(1, 7), PieceType.Obstacle);
 
         FillTable(true);
     }
@@ -157,9 +161,9 @@ public class TableManager : MonoBehaviour
     {
         for (int i = (int)_tableSize.y - 1; i >= 0; i--)
         {
-            if (!TableSlotArray[i][columnIndex].havePiece)
+            if (!TableSlotArray[i][columnIndex].havePiece && !TableSlotArray[i][columnIndex].haveObstacle)
             {
-                //Debug.Log("Found lowest available slot: " + TableSlotArray[i][columnIndex].slotIndex);
+                Debug.Log("Found lowest available slot: " + TableSlotArray[i][columnIndex].slotIndex);
                 return TableSlotArray[i][columnIndex];
             }
         }
@@ -167,7 +171,7 @@ public class TableManager : MonoBehaviour
         //check if every column refilled
         if(filledColumn < _tableSize.y -1)
         {
-            //Debug.Log("Column " + columnIndex + " is full");
+            Debug.Log("Column " + columnIndex + " is full");
             filledColumn++;
         }
         else
@@ -176,6 +180,30 @@ public class TableManager : MonoBehaviour
             filledColumn = 0;
             Invoke(nameof(InvokeTableReadyEvent), 0.5f);
             //InvokeTableReadyEvent();
+        }
+
+        return null;
+    }
+
+    public TableSlot FindTwoLowestAvailableSlot(int columnIndex)
+    {
+        for (int i = (int)_tableSize.y - 1; i >= 0; i--)
+        {
+            if (!TableSlotArray[i][columnIndex].havePiece && !TableSlotArray[i][columnIndex+1].havePiece)
+            {
+                return TableSlotArray[i][columnIndex];
+            }
+        }
+
+        //check if every column refilled
+        if (filledColumn < _tableSize.y - 1)
+        {
+            filledColumn++;
+        }
+        else
+        {
+            filledColumn = 0;
+            Invoke(nameof(InvokeTableReadyEvent), 0.5f);
         }
 
         return null;
@@ -191,6 +219,21 @@ public class TableManager : MonoBehaviour
 
         TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].setOccupyStatus(false);
         //Debug.Log("Piece leave slot " + slotIndex + " occupy " + TableSlotArray[(int)slotIndex.y][(int)slotIndex.x].havePiece);
+    }
+
+    void ReserveSpotForObstacle(Vector2 slotIndex, PieceType obstacleType)
+    {
+        //Debug.Log("reserve 1");
+        //for (int i = (int)slotIndex.y; i >= 0; i--)
+        //{
+        //    for (int j = (int)slotIndex.x; j < (int)slotIndex.x + 2; j++)
+        //    {
+        //        TableSlotArray[i][j].SetObstacleStatus(true);
+        //        Debug.Log("reserve 2");
+        //    }
+        //}
+
+        SpawnerList[(int)slotIndex.x].SetupObstacle(obstacleType);
     }
 
     void PlacingEachSpawner()
@@ -225,9 +268,14 @@ public class TableManager : MonoBehaviour
     void FillTable(bool isFirstTime = false)
     {
         //Debug.Log("Refill Table");
-        foreach (PieceSpawner spawner in SpawnerList)
+        //foreach (PieceSpawner spawner in SpawnerList)
+        //{
+        //    spawner.MoveNewPieceDown(isFirstTime);
+        //}
+
+        for (int i = 0; i < _tableSize.x; i++)
         {
-            spawner.MoveNewPieceDown(isFirstTime);
+            SpawnerList[i].MoveNewPieceDown(isFirstTime);
         }
 
         //Invoke(nameof(InvokeTableReadyEvent), 1);
@@ -247,7 +295,7 @@ public class TableManager : MonoBehaviour
     }
 
     //call from pieceObject
-    public void CheckIfPieceMatch(PieceObject selectedPiece)
+    public void CheckIfPieceMatch(BasePiece selectedPiece)
     {
         if (selectedPiece.pieceData.pieceType == PieceType.Bomb)
         {
@@ -271,7 +319,7 @@ public class TableManager : MonoBehaviour
         }
     }
 
-    void DestroyMatchGroup(List<PieceObject> matchedPieces)
+    void DestroyMatchGroup(List<BasePiece> matchedPieces)
     {
         Debug.Log("destroy " + matchedPieces.Count + " pieces");
 
@@ -282,7 +330,7 @@ public class TableManager : MonoBehaviour
 
         isReadyToTouch = false;
 
-        foreach (PieceObject piece in matchedPieces)
+        foreach (BasePiece piece in matchedPieces)
         {
             piece.DestroyPiece();
             //TableSlotArray[(int)piece.pieceData.slotIndex.y][(int)piece.pieceData.slotIndex.x].setOccupyStatus(false);
@@ -291,7 +339,7 @@ public class TableManager : MonoBehaviour
         DestroyAfterEffect(matchedPieces, matchedPieces[0].pieceData.pieceType);
     }
 
-    void DestroyAfterEffect(List<PieceObject> matchedPieces, PieceType _pieceType)
+    void DestroyAfterEffect(List<BasePiece> matchedPieces, PieceType _pieceType)
     {
         List<Vector3> piecesPos = matchedPieces.FindAll(x => x != null).ConvertAll(x => x.transform.localPosition);
         fxManager.PlayPopEffect(piecesPos, _pieceType);
@@ -300,9 +348,9 @@ public class TableManager : MonoBehaviour
         //MoveActivePiecesDown();
     }
 
-    public void UseBome(PieceObject bombPiece, Vector2 pieceIndex)
+    public void UseBome(BasePiece bombPiece, Vector2 pieceIndex)
     {
-        List<PieceObject> destroyPieces = new List<PieceObject>();
+        List<BasePiece> destroyPieces = new List<BasePiece>();
 
         for (int i = 0; i < _tableSize.x; i++)
         {
@@ -324,7 +372,7 @@ public class TableManager : MonoBehaviour
         });
 
         //Destroy the pieces in order
-        foreach (PieceObject piece in destroyPieces)
+        foreach (BasePiece piece in destroyPieces)
         {
             piece.DestroyPiece();
         }
@@ -332,12 +380,12 @@ public class TableManager : MonoBehaviour
         DestroyAfterEffect(destroyPieces, PieceType.Bomb);
     }
 
-    IEnumerator UseDisco(PieceObject discoPiece, PieceType discoColor)
+    IEnumerator UseDisco(BasePiece discoPiece, PieceType discoColor)
     {
         isReadyToTouch = false;
 
-        List<PieceObject> destroyPieces = new List<PieceObject>();
-        List<PieceObject> randomOrderPieces = new List<PieceObject>();
+        List<BasePiece> destroyPieces = new List<BasePiece>();
+        List<BasePiece> randomOrderPieces = new List<BasePiece>();
 
         //destroyPiece.Add(discoPiece);
 
@@ -352,7 +400,7 @@ public class TableManager : MonoBehaviour
             }
         }
 
-        PieceObject tempPiece = new PieceObject();
+        BasePiece tempPiece = new BasePiece();
 
         for(int i = 0; i < destroyPieces.Count; i++)
         {
@@ -365,7 +413,7 @@ public class TableManager : MonoBehaviour
             randomOrderPieces.Add(tempPiece);
         }
 
-        foreach (PieceObject piece in randomOrderPieces)
+        foreach (BasePiece piece in randomOrderPieces)
         {
             yield return StartCoroutine(fxManager.PlayTrailEffect(discoPiece.transform.localPosition, piece.transform.localPosition, discoColor));
 
@@ -374,7 +422,7 @@ public class TableManager : MonoBehaviour
 
 
         discoPiece.DestroyPiece();
-        DestroyAfterEffect(new List<PieceObject> { discoPiece }, discoColor);
+        DestroyAfterEffect(new List<BasePiece> { discoPiece }, discoColor);
         //DestroyAfterEffect(destroyPiece, discoColor);
 
         discoCo = null;
@@ -382,7 +430,7 @@ public class TableManager : MonoBehaviour
         //Invoke(nameof(MoveActivePiecesDown), 0.1f);
     }
 
-    void SpawnSpecialPiece(List<PieceObject> _matchGroup, PieceData pieceData, PieceType specialType)
+    void SpawnSpecialPiece(List<BasePiece> _matchGroup, PieceData pieceData, PieceType specialType)
     {
         SpawnerList[(int)pieceData.slotIndex.x].SetupSpecialPiece(pieceData.slotIndex, specialType, pieceData.pieceType);
     }
@@ -393,7 +441,10 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 0; j < TableSize.x; j++)
             {
-                TableSlotArray[i][j].pieceObject.DisableHighlight();
+                if(TableSlotArray[i][j].pieceObject != null)
+                {
+                    TableSlotArray[i][j].pieceObject.DisableHighlight();
+                }
             }
         }
     }
@@ -402,10 +453,11 @@ public class TableManager : MonoBehaviour
 [System.Serializable]
 public class TableSlot
 {
-    public Vector2 slotIndex = Vector2.zero;
+    public Vector2 slotIndex = Vector2.zero;//x = horizontal, y = vertical
     public Vector2 SlotPosition = Vector2.zero;
-    public PieceObject pieceObject { get; set; }
+    public BasePiece pieceObject { get; set; }
     public bool havePiece { get; private set; }
+    public bool haveObstacle { get; private set; }
 
     public TableSlot(Vector2 index, Vector2 position, bool havePiece = false)
     {
@@ -417,5 +469,10 @@ public class TableSlot
     public void setOccupyStatus(bool status)
     {
         havePiece = status;
+    }
+
+    public void SetObstacleStatus(bool status)
+    {
+        haveObstacle = status;
     }
 }

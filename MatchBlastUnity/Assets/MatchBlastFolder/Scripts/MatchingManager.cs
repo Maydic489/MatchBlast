@@ -7,7 +7,7 @@ public class MatchingManager : MonoBehaviour
 {
     [SerializeField] TableManager _tableManager;
 
-    List<List<PieceObject>> groupPieces = new List<List<PieceObject>>();
+    List<List<BasePiece>> groupPieces = new List<List<BasePiece>>();
 
     public static MatchingManager instance = null;
     void Awake()
@@ -27,7 +27,7 @@ public class MatchingManager : MonoBehaviour
         _tableManager.tableReadyEvent.AddListener(CheckMatches);
     }
 
-    public List<PieceObject> SelectMatchGroup(PieceObject selectedPiece)
+    public List<BasePiece> SelectMatchGroup(BasePiece selectedPiece)
     {
         var selectedGroup = FindThisPieceGroup(selectedPiece);
 
@@ -44,11 +44,11 @@ public class MatchingManager : MonoBehaviour
         }
     }
 
-    List<PieceObject> FindThisPieceGroup(PieceObject selectedPiece)
+    List<BasePiece> FindThisPieceGroup(BasePiece selectedPiece)
     {
         int i = 0;
 
-        foreach (List<PieceObject> thisGroup in groupPieces)
+        foreach (List<BasePiece> thisGroup in groupPieces)
         {
             if(thisGroup.Exists(x => x.pieceData.slotIndex == selectedPiece.pieceData.slotIndex))
             {
@@ -66,7 +66,7 @@ public class MatchingManager : MonoBehaviour
     {
         groupPieces.Clear();
 
-        List<PieceObject> matchedPieces = new List<PieceObject>();
+        List<BasePiece> matchedPieces = new List<BasePiece>();
 
         //check horizontal matches
         for (int i = 0; i < _tableManager.TableSize.y; i++)
@@ -169,10 +169,10 @@ public class MatchingManager : MonoBehaviour
             Debug.Log("no match found");
         }
 
-        void AddMatchedPiecesToGroup(List<PieceObject> matchedPieces)
+        void AddMatchedPiecesToGroup(List<BasePiece> matchedPieces)
         {
             //create new group to contain matched pieces data, before clear matchedPieces
-            List<PieceObject> newGroup = new List<PieceObject>(matchedPieces);
+            List<BasePiece> newGroup = new List<BasePiece>(matchedPieces);
 
             groupPieces.Add(newGroup);
 
@@ -207,11 +207,11 @@ public class MatchingManager : MonoBehaviour
         //Debug.Log("have final " + groupPieces.Count + " group pieces");
     }
 
-    bool AreGroupsAdjacent(List<PieceObject> group1, List<PieceObject> group2, int g1, int g2)
+    bool AreGroupsAdjacent(List<BasePiece> group1, List<BasePiece> group2, int g1, int g2)
     {
-        foreach (PieceObject piece1 in group1)
+        foreach (BasePiece piece1 in group1)
         {
-            foreach (PieceObject piece2 in group2)
+            foreach (BasePiece piece2 in group2)
             {
                 //Check if piece1 and piece2 are adjacent in the table
                 if (ArePiecesAdjacent(piece1, piece2,g1,g2))
@@ -224,7 +224,7 @@ public class MatchingManager : MonoBehaviour
         return false;
     }
 
-    bool ArePiecesAdjacent(PieceObject piece1, PieceObject piece2, int g1, int g2)
+    bool ArePiecesAdjacent(BasePiece piece1, BasePiece piece2, int g1, int g2)
     {
         Vector2 pos1 = piece1.pieceData.slotIndex;
         Vector2 pos2 = piece2.pieceData.slotIndex;
@@ -243,12 +243,12 @@ public class MatchingManager : MonoBehaviour
         return false;
     }
 
-    void CombineGroupWithoutDuplicatePiece(List<PieceObject> group1, List<PieceObject> group2)
+    void CombineGroupWithoutDuplicatePiece(List<BasePiece> group1, List<BasePiece> group2)
     {
-        foreach (PieceObject piece2 in group2)
+        foreach (BasePiece piece2 in group2)
         {
             bool isDuplicate = false;
-            foreach (PieceObject piece1 in group1)
+            foreach (BasePiece piece1 in group1)
             {
                 if (piece1.pieceData.slotIndex == piece2.pieceData.slotIndex)
                 {
@@ -264,7 +264,7 @@ public class MatchingManager : MonoBehaviour
         }
     }
 
-    IEnumerator SetForSpecialPiece(List<PieceObject> pieceObjects)
+    IEnumerator SetForSpecialPiece(List<BasePiece> pieceObjects)
     {
         yield return new WaitUntil(() => TableManager.instance.isReadyToTouch);
 
@@ -274,21 +274,21 @@ public class MatchingManager : MonoBehaviour
 
         if (CheckForSpecialPiece(pieceObjects) == PieceType.Disco)
         {
-            foreach (PieceObject piece in pieceObjects)
+            foreach (BasePiece piece in pieceObjects)
             {
                 piece.HighlightPotentailBonusPiece(PieceType.Disco);
             }
         }
         else if(CheckForSpecialPiece(pieceObjects) == PieceType.Bomb)
         {
-            foreach (PieceObject piece in pieceObjects)
+            foreach (BasePiece piece in pieceObjects)
             {
                 piece.HighlightPotentailBonusPiece(PieceType.Bomb);
             }
         }
         else
         {
-            foreach (PieceObject piece in pieceObjects)
+            foreach (BasePiece piece in pieceObjects)
             {
                 //piece.DisableHighlight();
                 piece.SetPieceColor(false, piece.pieceData.pieceType);
@@ -296,7 +296,7 @@ public class MatchingManager : MonoBehaviour
         }
     }
 
-    public PieceType CheckForSpecialPiece(List<PieceObject> pieceObjects)
+    public PieceType CheckForSpecialPiece(List<BasePiece> pieceObjects)
     {
         if (pieceObjects.Count >= 10)
         {
@@ -314,7 +314,8 @@ public class MatchingManager : MonoBehaviour
 
     public bool IsThisASpecialPiece(PieceData piece)
     {
-        if (piece.pieceType == PieceType.Bomb || piece.pieceType == PieceType.Disco)
+        if (piece.pieceType == PieceType.Bomb || piece.pieceType == PieceType.Disco
+            || piece.pieceType == PieceType.Obstacle || piece.pieceType == PieceType.ObstacleBig)
         {
             return true;
         }

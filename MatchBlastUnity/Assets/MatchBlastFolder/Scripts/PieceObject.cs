@@ -4,15 +4,14 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class PieceObject : MonoBehaviour
+public class PieceObject : BasePiece
 {
-    public PieceData pieceData;
+    //public PieceData pieceData;
     public SpriteRenderer renderer;
     [SerializeField] SpriteRenderer iconRenderer;
     [SerializeField] List<Sprite> pieceSprites = new List<Sprite>();//0 = normal, 1 = bomb, 2 = disco
     [SerializeField] List<Sprite> PieceIcons = new List<Sprite>();//0 = X,1 = O, 2 = SQ, 3 = TRI
     [SerializeField] List<Sprite> hintIconSprite = new List<Sprite>();//0 = bomb, 1 = disco
-    [SerializeField] Ease easeType = Ease.OutBounce;
 
     private void Start()
     {
@@ -26,8 +25,9 @@ public class PieceObject : MonoBehaviour
             SetPieceColor();
     }
 
-    public void ResetPiece()
+    public override void ResetPiece()
     {
+        Debug.Log("Reset Piece",this);
         renderer.transform.localScale = Vector3.one;
         renderer.flipY = false;
         renderer.flipX = false;
@@ -41,7 +41,7 @@ public class PieceObject : MonoBehaviour
         }
     }
 
-    public void MovePieceDown(float newPosY, float time)
+    public override void MovePieceDown(float newPosY, float time)
     {
         transform.DOLocalMoveY(newPosY, time).SetEase(easeType);
 
@@ -53,17 +53,17 @@ public class PieceObject : MonoBehaviour
         }
     }
 
-    public void MovePieceHere(Vector2 newPos)
+    public override void MovePieceHere(Vector2 newPos)
     {
         transform.localPosition = newPos;
     }
 
-    public void ShakingPiece()
+    public override void ShakingPiece()
     {
         transform.DOShakeRotation(0.5f, 30, 30);
     }
 
-    public void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true, PieceType discoColor = PieceType.Red)
+    public override void SetPieceData(Vector2 slotIndex, PieceType piecetype = PieceType.Red, bool randomColor = true, PieceType discoColor = PieceType.Red)
     {
         if (pieceData == null)
         {
@@ -94,12 +94,12 @@ public class PieceObject : MonoBehaviour
         SetPieceColor(randomColor, piecetype, discoColor);
     }
 
-    public void LeaveCurrentSlot()
+    public override void LeaveCurrentSlot()
     {
         TableManager.instance.PieceLeaveCurrentSlot(pieceData.slotIndex);
     }
 
-    public void SetPieceColor(bool randomColor = true, PieceType color = PieceType.Red, PieceType discoColor = PieceType.Red)
+    public override void SetPieceColor(bool randomColor = true, PieceType color = PieceType.Red, PieceType discoColor = PieceType.Red)
     {
         if (randomColor)
             color = GetRandomPieceColor();
@@ -147,7 +147,7 @@ public class PieceObject : MonoBehaviour
         }
     }
 
-    public void HighlightPotentailBonusPiece(PieceType color = PieceType.Bomb)
+    public override void HighlightPotentailBonusPiece(PieceType color = PieceType.Bomb)
     {
         switch (color)
         {
@@ -160,7 +160,7 @@ public class PieceObject : MonoBehaviour
         }
     }
 
-    public void DisableHighlight()
+    public override void DisableHighlight()
     {
         switch (pieceData.pieceType)
         {
@@ -189,7 +189,7 @@ public class PieceObject : MonoBehaviour
     }
 
     //not really destroy, just return to pool
-    public void DestroyPiece()
+    public override void DestroyPiece()
     {
         this.gameObject.SetActive(false);
         LeaveCurrentSlot();
@@ -271,5 +271,7 @@ public enum PieceType
     Blue,
     Yellow,
     Bomb,
-    Disco
+    Disco,
+    Obstacle,
+    ObstacleBig
 }
