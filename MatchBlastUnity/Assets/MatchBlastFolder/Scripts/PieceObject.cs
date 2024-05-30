@@ -8,8 +8,10 @@ public class PieceObject : MonoBehaviour
 {
     public PieceData pieceData;
     public SpriteRenderer renderer;
-    [SerializeField] SpriteRenderer specialIcon;
-    [SerializeField] Sprite hintIconSprite;
+    [SerializeField] SpriteRenderer iconRenderer;
+    [SerializeField] List<Sprite> pieceSprites = new List<Sprite>();//0 = normal, 1 = bomb, 2 = disco
+    [SerializeField] List<Sprite> PieceIcons = new List<Sprite>();//0 = X,1 = O, 2 = SQ, 3 = TRI
+    [SerializeField] List<Sprite> hintIconSprite = new List<Sprite>();//0 = bomb, 1 = disco
     [SerializeField] Ease easeType = Ease.OutBounce;
     int moveDirection = -1;
 
@@ -23,6 +25,11 @@ public class PieceObject : MonoBehaviour
             pieceData = new PieceData(GetRandomPieceColor(), new Vector2(0, 0));
         else
             SetPieceColor();
+    }
+
+    public void ResetPiece()
+    {
+
     }
 
     public void OnMouseDown()
@@ -62,17 +69,19 @@ public class PieceObject : MonoBehaviour
             pieceData.pieceType = piecetype;
 
             if (pieceData.pieceType == PieceType.Bomb)
-                specialIcon.enabled = true;
+                renderer.sprite = pieceSprites[1];
             else if (pieceData.pieceType == PieceType.Disco)
             {
-                specialIcon.enabled = true;
+                renderer.sprite = pieceSprites[2];
                 pieceData.discoColor = discoColor;
             }
             else if (pieceData.pieceType != PieceType.Bomb && pieceData.pieceType != PieceType.Disco)
-                specialIcon.enabled = false;
+            {
+                renderer.sprite = pieceSprites[0];
+            }
         }
 
-        SetPieceColor(randomColor, piecetype);
+        SetPieceColor(randomColor, piecetype, discoColor);
     }
 
     public void LeaveCurrentSlot()
@@ -80,35 +89,49 @@ public class PieceObject : MonoBehaviour
         TableManager.instance.PieceLeaveCurrentSlot(pieceData.slotIndex);
     }
 
-    public void SetPieceColor(bool randomColor = true, PieceType color = PieceType.Red)
+    public void SetPieceColor(bool randomColor = true, PieceType color = PieceType.Red, PieceType discoColor = PieceType.Red)
     {
         if (randomColor)
             color = GetRandomPieceColor();
 
+        renderer.sprite = pieceSprites[0];
+
         switch (color)
         {
             case PieceType.Red:
-                renderer.color = Color.red;
+                iconRenderer.sprite = PieceIcons[0];
+                iconRenderer.color = MatchBlastManager.instance.red;
+                renderer.color = MatchBlastManager.instance.red;
                 pieceData.pieceType = PieceType.Red;
                 break;
             case PieceType.Green:
-                renderer.color = Color.green;
+                iconRenderer.sprite = PieceIcons[1];
+                iconRenderer.color = MatchBlastManager.instance.green;
+                renderer.color = MatchBlastManager.instance.green;
                 pieceData.pieceType = PieceType.Green;
                 break;
             case PieceType.Blue:
-                renderer.color = Color.blue;
+                iconRenderer.sprite = PieceIcons[2];
+                iconRenderer.color = MatchBlastManager.instance.blue;
+                renderer.color = MatchBlastManager.instance.blue;
                 pieceData.pieceType = PieceType.Blue;
                 break;
             case PieceType.Yellow:
-                renderer.color = Color.yellow;
+                iconRenderer.sprite = PieceIcons[3];
+                iconRenderer.color = MatchBlastManager.instance.yellow;
+                renderer.color = MatchBlastManager.instance.yellow;
                 pieceData.pieceType = PieceType.Yellow;
                 break;
             case PieceType.Bomb:
-                renderer.color = Color.black;
+                iconRenderer.sprite = null;
+                renderer.sprite = pieceSprites[1];
+                renderer.color = Color.white;
                 pieceData.pieceType = PieceType.Bomb;
                 break;
             case PieceType.Disco:
-                renderer.color = Color.magenta;
+                iconRenderer.sprite = null;
+                renderer.sprite = pieceSprites[2];
+                renderer.color = GetDiscoColor(discoColor);
                 pieceData.pieceType = PieceType.Disco;
                 break;
         }
@@ -119,10 +142,10 @@ public class PieceObject : MonoBehaviour
         switch (color)
         {
             case PieceType.Bomb:
-                renderer.color = Color.cyan;
+                iconRenderer.sprite = hintIconSprite[0];
                 break;
             case PieceType.Disco:
-                renderer.color = Color.magenta;
+                iconRenderer.sprite = hintIconSprite[1];
                 break;
         }
     }
@@ -132,16 +155,20 @@ public class PieceObject : MonoBehaviour
         switch (pieceData.pieceType)
         {
             case PieceType.Red:
-                renderer.color = Color.red;
+                iconRenderer.sprite = PieceIcons[0];
+                renderer.color = MatchBlastManager.instance.red;
                 break;
             case PieceType.Green:
-                renderer.color = Color.green;
+                iconRenderer.sprite = PieceIcons[1];
+                renderer.color = MatchBlastManager.instance.green;
                 break;
             case PieceType.Blue:
-                renderer.color = Color.blue;
+                iconRenderer.sprite = PieceIcons[2];
+                renderer.color = MatchBlastManager.instance.blue;
                 break;
             case PieceType.Yellow:
-                renderer.color = Color.yellow;
+                iconRenderer.sprite = PieceIcons[3];
+                renderer.color = MatchBlastManager.instance.yellow;
                 break;
         }
     }
@@ -156,6 +183,23 @@ public class PieceObject : MonoBehaviour
     {
         this.gameObject.SetActive(false);
         LeaveCurrentSlot();
+    }
+
+    Color GetDiscoColor(PieceType discoColor)
+    {
+        switch (discoColor)
+        {
+            case PieceType.Red:
+                return MatchBlastManager.instance.red;
+            case PieceType.Green:
+                return MatchBlastManager.instance.green;
+            case PieceType.Blue:
+                return MatchBlastManager.instance.blue;
+            case PieceType.Yellow:
+                return MatchBlastManager.instance.yellow;
+            default:
+                return Color.white;
+        }
     }
 }
 
