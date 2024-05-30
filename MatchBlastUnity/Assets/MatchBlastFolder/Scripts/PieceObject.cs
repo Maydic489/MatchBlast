@@ -66,6 +66,8 @@ public class PieceObject : MonoBehaviour
         else
         {
             pieceData.slotIndex = slotIndex;
+            renderer.sortingOrder = (int)slotIndex.y * -1;
+            iconRenderer.sortingOrder = (int)slotIndex.y * -1;
             pieceData.pieceType = piecetype;
 
             if (pieceData.pieceType == PieceType.Bomb)

@@ -76,7 +76,7 @@ public class PieceSpawner : MonoBehaviour
     {
         foreach (PieceObject piece in piecePool)
         {
-            if (piece.gameObject.activeSelf != true)
+            if (piece.gameObject.activeSelf == false)
             {
                 piece.MovePieceHere(this.transform.localPosition);
                 piece.gameObject.SetActive(true);

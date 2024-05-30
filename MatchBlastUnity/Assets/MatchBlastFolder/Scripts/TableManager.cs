@@ -55,7 +55,7 @@ public class TableManager : MonoBehaviour
 
     private void Start()
     {
-        SetTableSize(10,10);
+        SetTableSize(12,10);
         PlacingEachSpawner();
 
         FillTable(true);
@@ -167,8 +167,8 @@ public class TableManager : MonoBehaviour
         {
             //Debug.Log("Table is ready");
             filledColumn = 0;
-            //Invoke(nameof(InvokeTableReadyEvent), 1);
-            InvokeTableReadyEvent();
+            Invoke(nameof(InvokeTableReadyEvent), 0.5f);
+            //InvokeTableReadyEvent();
         }
 
         return null;
@@ -234,7 +234,7 @@ public class TableManager : MonoBehaviour
         tableReadyEvent.Invoke();
         
 
-        Invoke(nameof(InvokeReadyToTouch), 0.5f);//the same duration as falling animation
+        Invoke(nameof(InvokeReadyToTouch), 0.1f);//the same duration as falling animation
     }
 
     void InvokeReadyToTouch()
@@ -247,7 +247,7 @@ public class TableManager : MonoBehaviour
     {
         if (selectedPiece.pieceData.pieceType == PieceType.Bomb)
         {
-            UseBome(selectedPiece.pieceData.slotIndex);
+            UseBome(selectedPiece, selectedPiece.pieceData.slotIndex);
             return;
         }
         else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
@@ -296,9 +296,9 @@ public class TableManager : MonoBehaviour
         //MoveActivePiecesDown();
     }
 
-    void UseBome(Vector2 pieceIndex)
+    public void UseBome(PieceObject bombPiece, Vector2 pieceIndex)
     {
-        List<PieceObject> destroyPiece = new List<PieceObject>();
+        List<PieceObject> destroyPieces = new List<PieceObject>();
 
         for (int i = 0; i < _tableSize.x; i++)
         {
@@ -306,13 +306,13 @@ public class TableManager : MonoBehaviour
             {
                 if (i == pieceIndex.x || j == pieceIndex.y)
                 {
-                    destroyPiece.Add(TableSlotArray[j][i].pieceObject);
+                    destroyPieces.Add(TableSlotArray[j][i].pieceObject);
                 }
             }
         }
 
         //Sort the pieces by distance to the bomb piece
-        destroyPiece.Sort((piece1, piece2) =>
+        destroyPieces.Sort((piece1, piece2) =>
         {
             float distance1 = Vector2.Distance(pieceIndex, piece1.pieceData.slotIndex);
             float distance2 = Vector2.Distance(pieceIndex, piece2.pieceData.slotIndex);
@@ -320,20 +320,20 @@ public class TableManager : MonoBehaviour
         });
 
         //Destroy the pieces in order
-        foreach (PieceObject piece in destroyPiece)
+        foreach (PieceObject piece in destroyPieces)
         {
             piece.DestroyPiece();
         }
 
-        DestroyAfterEffect(destroyPiece, PieceType.Bomb);
+        DestroyAfterEffect(destroyPieces, PieceType.Bomb);
     }
 
     IEnumerator UseDisco(PieceObject discoPiece, PieceType discoColor)
     {
         isReadyToTouch = false;
 
-        List<PieceObject> destroyPiece = new List<PieceObject>();
-        List<PieceObject> randomOrderPiece = new List<PieceObject>();
+        List<PieceObject> destroyPieces = new List<PieceObject>();
+        List<PieceObject> randomOrderPieces = new List<PieceObject>();
 
         //destroyPiece.Add(discoPiece);
 
@@ -343,25 +343,25 @@ public class TableManager : MonoBehaviour
             {
                 if (TableSlotArray[j][i].pieceObject.pieceData.pieceType == discoColor)
                 {
-                    destroyPiece.Add(TableSlotArray[j][i].pieceObject);
+                    destroyPieces.Add(TableSlotArray[j][i].pieceObject);
                 }
             }
         }
 
         PieceObject tempPiece = new PieceObject();
 
-        for(int i = 0; i < destroyPiece.Count; i++)
+        for(int i = 0; i < destroyPieces.Count; i++)
         {
             do
             {
-                tempPiece = destroyPiece[Random.Range(0, destroyPiece.Count)];
+                tempPiece = destroyPieces[Random.Range(0, destroyPieces.Count)];
             }
-            while (randomOrderPiece.Contains(tempPiece));
+            while (randomOrderPieces.Contains(tempPiece));
 
-            randomOrderPiece.Add(tempPiece);
+            randomOrderPieces.Add(tempPiece);
         }
 
-        foreach (PieceObject piece in randomOrderPiece)
+        foreach (PieceObject piece in randomOrderPieces)
         {
             yield return StartCoroutine(fxManager.PlayTrailEffect(discoPiece.transform.localPosition, piece.transform.localPosition, discoColor));
 
@@ -381,6 +381,17 @@ public class TableManager : MonoBehaviour
     void SpawnSpecialPiece(List<PieceObject> _matchGroup, PieceData pieceData, PieceType specialType)
     {
         SpawnerList[(int)pieceData.slotIndex.x].SetupSpecialPiece(pieceData.slotIndex, specialType, pieceData.pieceType);
+    }
+
+    public void ResetPiecesHighLight()
+    {
+        for (int i = 0; i < TableSize.y; i++)
+        {
+            for (int j = 0; j < TableSize.x; j++)
+            {
+                TableSlotArray[i][j].pieceObject.DisableHighlight();
+            }
+        }
     }
 }
 

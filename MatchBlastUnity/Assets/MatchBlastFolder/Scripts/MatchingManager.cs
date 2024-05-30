@@ -49,7 +49,7 @@ public class MatchingManager : MonoBehaviour
 
         foreach (List<PieceObject> thisGroup in groupPieces)
         {
-            if(thisGroup.Contains(selectedPiece))
+            if(thisGroup.Exists(x => x.pieceData.slotIndex == selectedPiece.pieceData.slotIndex))
             {
                 //Debug.Log("destroying group " + i + " with "+thisGroup.Count);
 
@@ -59,11 +59,6 @@ public class MatchingManager : MonoBehaviour
         }
 
         return null;
-    }
-
-    void ResetPieceHighlight()
-    {
-
     }
 
     void CheckMatches()
@@ -272,7 +267,11 @@ public class MatchingManager : MonoBehaviour
     {
         yield return new WaitUntil(() => TableManager.instance.isReadyToTouch);
 
-        if(CheckForSpecialPiece(pieceObjects) == PieceType.Disco)
+        TableManager.instance.ResetPiecesHighLight();
+
+        yield return new WaitForEndOfFrame();
+
+        if (CheckForSpecialPiece(pieceObjects) == PieceType.Disco)
         {
             foreach (PieceObject piece in pieceObjects)
             {
@@ -290,7 +289,7 @@ public class MatchingManager : MonoBehaviour
         {
             foreach (PieceObject piece in pieceObjects)
             {
-                piece.DisableHighlight();
+                //piece.DisableHighlight();
                 piece.SetPieceColor(false, piece.pieceData.pieceType);
             }
         }

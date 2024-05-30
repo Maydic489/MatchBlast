@@ -32,7 +32,6 @@ public class FXManager : MonoBehaviour
     IEnumerator MoveFXThroughPieces(List<Vector3> popPositions)
     {
         popFX.Stop();
-        //popFX.Clear();
 
         foreach (Vector3 pos in popPositions)
         {
