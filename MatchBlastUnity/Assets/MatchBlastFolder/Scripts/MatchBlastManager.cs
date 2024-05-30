@@ -24,4 +24,22 @@ public class MatchBlastManager : MonoBehaviour
 
         Application.targetFrameRate = 60;
     }
+
+    public void StartGameStageA()
+    {
+        TableManager.instance.GameStageA();
+    }
+    public void StartGameStageB()
+    {
+        TableManager.instance.GameStageB();
+    }
+    public void StartGameStageC()
+    {
+        TableManager.instance.GameStageC();
+    }
+
+    public void StopGame()
+    {
+        TableManager.instance.ClearTable();
+    }
 }

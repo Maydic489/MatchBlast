@@ -63,13 +63,88 @@ public class TableManager : MonoBehaviour
 
     private void Start()
     {
-        SetTableSize(10,10);
-        PlacingEachSpawner();
+        //SetTableSize(10,10);
+        //PlacingEachSpawner();
 
-        //ReserveSpotForObstacle(new Vector2(3, 1), PieceType.ObstacleBig);
-        ReserveSpotForObstacle(new Vector2(1, 7), PieceType.Obstacle);
+        ////ReserveSpotForObstacle(new Vector2(3, 1), PieceType.ObstacleBig);
+        //ReserveSpotForObstacle(new Vector2(1, 7), PieceType.Obstacle);
+
+        //FillTable(true);
+    }
+
+    void SetupGame(Vector2 tableDimension)
+    {
+        SetTableSize((int)tableDimension.x, (int)tableDimension.y);
+        PlacingEachSpawner();
+    }
+
+    public void GameStageA()
+    {
+        SetupGame(Vector2.one * 8);
+        ReserveSpotForObstacle(new Vector2(1, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(3, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(5, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(7, 0), PieceType.Obstacle);
+
 
         FillTable(true);
+    }
+    public void GameStageB()
+    {
+        SetupGame(new Vector2(12 , 10));
+        ReserveSpotForObstacle(new Vector2(0, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(1, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(4, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(7, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(10, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(11, 0), PieceType.Obstacle);
+
+
+        FillTable(true);
+    }
+    public void GameStageC()
+    {
+        SetupGame(new Vector2(10, 10));
+        ReserveSpotForObstacle(new Vector2(0, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(1, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(2, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(3, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(4, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(5, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(6, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(7, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(8, 0), PieceType.Obstacle);
+        ReserveSpotForObstacle(new Vector2(9, 0), PieceType.Obstacle);
+
+
+        FillTable(true);
+    }
+
+    public void ClearTable()
+    {
+        foreach (var spawner in SpawnerList)
+        {
+            Destroy(spawner.gameObject);
+        }
+
+        SpawnerList.Clear();
+
+        foreach (var slot in TableSlotArray)
+        {
+            foreach (var item in slot)
+            {
+                if (item.pieceObject != null)
+                {
+                    Destroy(item.pieceObject.gameObject);
+                }
+            }
+        }
+
+        foreach (Transform piece in tableObject.transform)
+        {
+            if(!piece.CompareTag("FX"))
+                Destroy(piece.gameObject);
+        }
     }
 
     public void SetTableSize(int sizeX, int sizeY)
