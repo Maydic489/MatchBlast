@@ -7,7 +7,7 @@ using System;
 public class PieceObject : BasePiece
 {
     //public PieceData pieceData;
-    public SpriteRenderer renderer;
+    //public SpriteRenderer renderer;
     [SerializeField] SpriteRenderer iconRenderer;
     [SerializeField] List<Sprite> pieceSprites = new List<Sprite>();//0 = normal, 1 = bomb, 2 = disco
     [SerializeField] List<Sprite> PieceIcons = new List<Sprite>();//0 = X,1 = O, 2 = SQ, 3 = TRI

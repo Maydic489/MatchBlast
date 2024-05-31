@@ -6,6 +6,7 @@ using UnityEngine;
 public class BasePiece : MonoBehaviour
 {
     public PieceData pieceData;
+    public SpriteRenderer renderer;
     public Ease easeType = Ease.OutBounce;
 
     public virtual void MovePieceDown(float newPosY, float time)

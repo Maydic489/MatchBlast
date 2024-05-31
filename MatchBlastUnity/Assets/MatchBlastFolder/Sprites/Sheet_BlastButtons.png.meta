@@ -32,6 +32,9 @@ TextureImporter:
   - first:
       213: 8632972152546690238
     second: Icon_SmallBomb
+  - first:
+      213: 8930805350038472550
+    second: Icon_Star
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -95,7 +98,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -107,7 +110,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -119,7 +122,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -338,6 +341,27 @@ TextureImporter:
       bones: []
       spriteID: eb4826cee6a7ec770800000000000000
       internalID: 8632972152546690238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Star
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 476
+        width: 151
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 667833ff52890fb70800000000000000
+      internalID: 8930805350038472550
       vertices: []
       indices: 
       edges: []

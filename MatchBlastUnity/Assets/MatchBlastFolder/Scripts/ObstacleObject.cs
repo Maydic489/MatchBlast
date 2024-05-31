@@ -13,6 +13,7 @@ public class ObstacleObject : BasePiece
         }
         else
         {
+            renderer.sortingOrder = (int)slotIndex.y * -1;
             pieceData.slotIndex = slotIndex;
             pieceData.pieceType = piecetype;
         }
