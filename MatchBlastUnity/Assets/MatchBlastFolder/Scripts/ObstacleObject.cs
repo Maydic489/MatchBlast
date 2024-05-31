@@ -34,6 +34,8 @@ public class ObstacleObject : BasePiece
             time = 1.5f;
 
             LeaveCurrentSlot();
+
+            MatchBlastManager.instance.StarFall();
         }
 
         transform.DOLocalMoveY(newPosY, time).SetEase(easeType);

@@ -35,7 +35,7 @@ public class PieceObject : BasePiece
 
     public void OnMouseDown()
     {
-        if(TableManager.instance.isReadyToTouch)
+        if(TableManager.instance.isReadyToTouch && (MatchBlastManager.instance.moveNum > 0 && MatchBlastManager.instance.starNum > 0))
         {
             TableManager.instance.CheckIfPieceMatch(this);
         }

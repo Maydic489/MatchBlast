@@ -375,11 +375,13 @@ public class TableManager : MonoBehaviour
         if (selectedPiece.pieceData.pieceType == PieceType.Bomb)
         {
             UseBome(selectedPiece, selectedPiece.pieceData.slotIndex);
+            MatchBlastManager.instance.ValidClick();
             return;
         }
         else if(selectedPiece.pieceData.pieceType == PieceType.Disco)
         {
             discoCo = StartCoroutine(UseDisco(selectedPiece, selectedPiece.pieceData.discoColor));
+            MatchBlastManager.instance.ValidClick();
             return;
         }
 
@@ -392,6 +394,8 @@ public class TableManager : MonoBehaviour
         {
             DestroyMatchGroup(matchGroup);
         }
+        
+        MatchBlastManager.instance.ValidClick();
     }
 
     void DestroyMatchGroup(List<BasePiece> matchedPieces)
