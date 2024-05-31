@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator WonScreen()
     {
-        gameOverText.text = "You Won!";
+        gameOverText.text = "You  Won!";
         gameOverText.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(2f);
