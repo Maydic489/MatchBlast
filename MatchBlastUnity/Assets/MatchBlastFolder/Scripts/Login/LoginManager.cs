@@ -27,6 +27,8 @@ public class LoginManager : MonoBehaviour
 
     void InitFirebase()
     {
+        Debug.LogError("Start FB init");
+
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
             if (task.IsCompleted && task.Result == DependencyStatus.Available)
             {
